@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Musik Player</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
+</head>
+<body>
+    <label for="input" class="inputLabel">
+        <input type="file" id="input" accept="mp3, wav">
+        <img src="Wallpaper/AddSongButton.svg" id="inputButton">
+      </label>      
+    <div id="container">
+        <div id="links">
+        <div id="song"></div>
+        </div>
+        <div id="rechts">
+        <div id="artist">Unbekannter Artist</div>
+        <div id="album">Unbekanntes Album</div>
+        <div id="name">Unbekannter Titel</div>
+        <div id="test"></div>
+        <img id="zuruck" src="Wallpaper/BackButton.svg">
+        <img id="stopp" src="Wallpaper/playButton2.svg">
+        <img id="weiter" src="Wallpaper/ForwardButton.svg">
+        <br>
+        <span id="anfang">0</span>
+        <input type="range" min="0" max="100" value="0" id="slider">
+        <span id="ende">0</span>
+
+    </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
