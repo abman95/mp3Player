@@ -15,6 +15,8 @@ defaultSongCover.style.backgroundImage = "url('Wallpaper/defaultSongCover.jpg')"
 
 
 input.addEventListener("change", (event) => {
+  document.getElementById("weiter").setAttribute("src", "Wallpaper/ForwardButton.svg");
+
     const file = event.target.files[0];
     const musikName = file.name;
   
@@ -66,7 +68,7 @@ input.addEventListener("change", (event) => {
             document.querySelector("#name").textContent = title;
             document.querySelector("#artist").textContent = artist;
             document.querySelector("#album").textContent = album;
-        },
+            },
         onError: function(error) {
             console.log(error);
         }
@@ -80,9 +82,14 @@ input.addEventListener("change", (event) => {
     const duration = audio.duration;
     const minutes = Math.floor(duration / 60);
     const seconds = Math.floor(duration % 60);
-
         ende.innerHTML = `${minutes}:${seconds}`;
       };
+
+      setInterval(function aktuelleZeit() {
+        const Minuten = Math.floor(audio.currentTime / 60);
+        const Sekunden = Math.floor(audio.currentTime % 60);
+        anfang.textContent = `${Minuten}:${Sekunden}`
+      }, 1000);
       
 
     document.getElementById("stopp").addEventListener("click", function play() {
@@ -100,14 +107,15 @@ input.addEventListener("change", (event) => {
     });
     document.getElementById("weiter").addEventListener("click", function () {
       if (audio.playbackRate === 1) {
-      audio.playbackRate = 2; // Verdoppelt die Wiedergabegeschwindigkeit
+      audio.pause();
+      audio.playbackRate = 5; // Verdoppelt die Wiedergabegeschwindigkeit
       audio.play();
       setTimeout(() => {
         document.getElementById("weiter").setAttribute("src", "Wallpaper/ForwardButtonDouble.svg");
         pauseButton.setAttribute("src", "Wallpaper/PauseButton.svg");
 
       }, 100);
-    } else if (audio.playbackRate === 2) {
+    } else if (audio.playbackRate !== 1) {
       audio.playbackRate = 1; // Verdoppelt die Wiedergabegeschwindigkeit
       audio.play();
       setTimeout(() => {
@@ -129,13 +137,17 @@ input.addEventListener("change", (event) => {
     setTimeout(() => {
       document.getElementById("zuruck").setAttribute("src", "Wallpaper/BackButton.svg");
     }, 1000);   
-  } else if (audio.playbackRate === 2) {
-    audio.playbackRate = 1; // Verdoppelt die Wiedergabegeschwindigkeit
-    audio.play();
-    setTimeout(() => {
-      document.getElementById("zuruck").setAttribute("src", "Wallpaper/BackButton.svg");
-      pauseButton.setAttribute("src", "Wallpaper/PauseButton.svg");
-    }, 100);
+  } else if (audio.playbackRate !== 2) {
+      audio.pause();
+      audio.currentTime -= 5;
+      audio.play();
+      setTimeout(() => {
+        document.getElementById("zuruck").setAttribute("src", "Wallpaper/BackButtonDouble.svg");
+        pauseButton.setAttribute("src", "Wallpaper/PauseButton.svg");
+      }, 100);
+      setTimeout(() => {
+        document.getElementById("zuruck").setAttribute("src", "Wallpaper/BackButton.svg");
+      }, 1000);   
   }
 });
   });
