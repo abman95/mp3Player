@@ -20,7 +20,7 @@ defaultSongCover.style.backgroundImage = "url('Wallpaper/defaultSongCover.jpg')"
 
 slider.addEventListener("input", function(){
   const currentSliderValue = this.value;
-  const audioSliderValue = audio.duration / 100;
+  const audioSliderValue = audio.duration/audio.duration;
   let inputAnzeige = Math.floor(currentSliderValue * audioSliderValue);
   audio.currentTime = inputAnzeige;
 });
@@ -144,7 +144,7 @@ input.addEventListener("change", (event) => {
     document.getElementById("zuruck").addEventListener("click", function () {
     if (audio.playbackRate === 1) {
       audio.pause();
-      audio.currentTime -= 5;
+      audio.currentTime -= 10;
       audio.play();
     setTimeout(() => {
       document.getElementById("zuruck").setAttribute("src", "Wallpaper/BackButtonDouble.svg");
