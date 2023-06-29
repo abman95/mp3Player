@@ -6,6 +6,7 @@ const pauseButton = document.getElementById("stopp");
 const anfang = document.getElementById("anfang");
 const ende = document.getElementById("ende");
 const input = document.querySelector("#input");
+const slider = document.querySelector("input[type='range']");
 
 
 let audio = null;
@@ -14,9 +15,20 @@ let defaultSongCover = document.querySelector("#song");
 defaultSongCover.style.backgroundImage = "url('Wallpaper/defaultSongCover.jpg')";
 
 
+
+
+
+slider.addEventListener("input", function(){
+  const currentSliderValue = this.value;
+  const audioSliderValue = audio.duration / 100;
+  let inputAnzeige = Math.floor(currentSliderValue * audioSliderValue);
+  audio.currentTime = inputAnzeige;
+});
+
+
 input.addEventListener("change", (event) => {
   document.getElementById("weiter").setAttribute("src", "Wallpaper/ForwardButton.svg");
-
+    currentValue = 0;
     const file = event.target.files[0];
     const musikName = file.name;
   
@@ -75,23 +87,27 @@ input.addEventListener("change", (event) => {
     });
 
 
+    
+
     const liedPath = URL.createObjectURL(file);
     audio = new Audio(liedPath)
+
 
     audio.onloadedmetadata = function() {
     const duration = audio.duration;
     const minutes = Math.floor(duration / 60);
-    const seconds = Math.floor(duration % 60);
+    let seconds = Math.floor(duration % 60);
+    seconds = seconds < 10 ? "0" + seconds : seconds;
         ende.innerHTML = `${minutes}:${seconds}`;
       };
 
       setInterval(function aktuelleZeit() {
         const Minuten = Math.floor(audio.currentTime / 60);
-        const Sekunden = Math.floor(audio.currentTime % 60);
+        let Sekunden = Math.floor(audio.currentTime % 60);
+        Sekunden = Sekunden < 10 ? "0" + Sekunden : Sekunden;
         anfang.textContent = `${Minuten}:${Sekunden}`
-      }, 1000);
-      
-
+      }, 1);
+    
     document.getElementById("stopp").addEventListener("click", function play() {
         if (audio.paused) {
             audio.play();
@@ -108,7 +124,7 @@ input.addEventListener("change", (event) => {
     document.getElementById("weiter").addEventListener("click", function () {
       if (audio.playbackRate === 1) {
       audio.pause();
-      audio.playbackRate = 5; // Verdoppelt die Wiedergabegeschwindigkeit
+      audio.playbackRate = 10; // Verdoppelt die Wiedergabegeschwindigkeit
       audio.play();
       setTimeout(() => {
         document.getElementById("weiter").setAttribute("src", "Wallpaper/ForwardButtonDouble.svg");
@@ -139,7 +155,7 @@ input.addEventListener("change", (event) => {
     }, 1000);   
   } else if (audio.playbackRate !== 2) {
       audio.pause();
-      audio.currentTime -= 5;
+      audio.currentTime -= 10;
       audio.play();
       setTimeout(() => {
         document.getElementById("zuruck").setAttribute("src", "Wallpaper/BackButtonDouble.svg");
@@ -149,5 +165,17 @@ input.addEventListener("change", (event) => {
         document.getElementById("zuruck").setAttribute("src", "Wallpaper/BackButton.svg");
       }, 1000);   
   }
-});
   });
+});
+
+
+
+
+setInterval(function sliderChanger(){ 
+  slider.value = Math.floor(audio.currentTime);
+  slider.setAttribute("max", Math.floor(audio.duration));
+}, 1);
+
+
+
+

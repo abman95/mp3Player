@@ -18,6 +18,10 @@
 
 @media only screen and (min-width: 769px) {
 
+#test {
+    color: white;
+  }
+
 :root {
     /* Justify-content geht nicht ohne displax FLEX
     mit diesem Code zentrieren wir unsere Element horizontal */
@@ -148,12 +152,18 @@
   }
 
   #anfang {
+    margin: 80px 0px 0px 2px;
+    position: fixed;
+    font-family: Graphik0;
     font-size: 15px;
     color: white;
     text-shadow: 0.5px 0.5px 0.5px black;
   }
 
   #ende {
+    margin: 80px 0 0 -35px;
+    position: fixed;
+    font-family: Graphik0;
     font-size: 15px;
     color: white;
     text-shadow: 0.5px 0.5px 0.5px black;
@@ -177,6 +187,22 @@
   width: 65px;
   height: 65px;
 }
+
+input[type='range'] {
+  cursor: pointer;
+  overflow: hidden;
+  width: 80px;
+  -webkit-appearance: none;
+  background-color: rgba(128, 128, 128, 0.667);
+}
+
+input[type='range']::-webkit-slider-thumb {
+  width: 10px;
+  -webkit-appearance: none;
+  height: 10px;
+  background: #ffffff;
+  box-shadow: -200px 0 0 200px #ffffffaf;
+}
 }
 
 
@@ -189,7 +215,22 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 @media only screen and (max-width: 768px) {
+
+  #test {
+    color: white;
+  }
 
   :root {
       /* Justify-content geht nicht ohne displax FLEX
@@ -269,6 +310,7 @@
     transform: scale(1.2); 
     overflow: hidden;
     z-index: -1;
+    transition: 0.25s all ease;
   }
   
   
@@ -314,18 +356,20 @@
       font-size: 7.5px;
     }
   
-    #slider { 
+    #slider {
       width: 175px;
       margin-top: 35px;
     }
   
     #anfang {
+      font-family: Graphik0;
       font-size: 7.5px;
       color: white;
       text-shadow: 0.5px 0.5px 0.5px black;
     }
   
     #ende {
+      font-family: Graphik0;
       font-size: 7.5px;
       color: white;
       text-shadow: 0.5px 0.5px 0.5px black;
@@ -348,5 +392,21 @@
   #inputButton:hover {
     width: 35x;
     height: 35px;
+  }
+
+  input[type='range'] {
+    cursor: pointer;
+    overflow: hidden;
+    width: 80px;
+    -webkit-appearance: none;
+    background-color: rgba(128, 128, 128, 0.667);
+  }
+  
+  input[type='range']::-webkit-slider-thumb {
+    width: 10px;
+    -webkit-appearance: none;
+    height: 5px;
+    background: #ffffff;
+    box-shadow: -200px 0 0 200px #ffffffaf;
   }
   }
