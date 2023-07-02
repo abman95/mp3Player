@@ -9,14 +9,18 @@
 </head>
 <body>
     <label for="input" class="inputLabel">
-        <input type="file" id="input" accept="mp3, wav">
+        <input type="file" id="input" accept="mp3, wav" webkitdirectory multiple/>
         <img src="Wallpaper/AddSongButton.svg" id="inputButton">
+        <h2></h2>
+        <ul id="fileList">
+        </ul>
       </label>      
     <div id="container">
         <div id="links">
         <div id="song"></div>
         </div>
         <div id="rechts">
+        <div id="autoPlayButton"></div>
         <div id="artist">Unbekannter Artist</div>
         <div id="album">Unbekanntes Album</div>
         <div id="name">Unbekannter Titel</div>
