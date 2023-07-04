@@ -8,12 +8,15 @@ const liedAnfangszeit = document.getElementById("anfang");
 const liedGesamtZeit = document.getElementById("ende");
 const input = document.querySelector("#input");
 const slider = document.querySelector("input[type='range']");
-const autoPlayButton = document.getElementById("autoPlayButton");
-
+const autoPlayButton = document.getElementById("autoPlayCheckbox");
+const autoPlayButtonDesign = document.getElementById("AutoplayButton");
+const autpPlayButtonBackground = document.getElementById("autoPlayButtonBackgroundOff");
+const randomSong = document.getElementById("randomSong");
 
 let audio = null;
 let previousFile = null;
 let newIndex = 0;
+let folderTrackCount = null;
 let defaultSongCover = document.querySelector("#song");
 defaultSongCover.style.backgroundImage =
   "url('Wallpaper/defaultSongCover.jpg')";
@@ -71,6 +74,79 @@ function autoPlayButtonActive () {
   };
 
 
+  let checkAutoPlayButton = null;
+  let isClicked = false;
+  
+  autoPlayButton.addEventListener("click", (event) => {
+    if (!isClicked) {
+      // Autoplay On
+      checkAutoPlayButton = true;
+      sliderUpdater();
+      isClicked = true;
+      autoPlayButtonDesign.classList.remove("AutoplayButtonOn");
+      autpPlayButtonBackground.classList.remove("autoPlayButtonBackgroundOn");
+      autoPlayButtonDesign.classList.add("AutoplayButtonOn");
+      autpPlayButtonBackground.classList.add("autoPlayButtonBackgroundOn");
+    } else {
+      // Autoplay Off
+      checkAutoPlayButton = false;
+      sliderUpdater();
+      isClicked = false;
+      autoPlayButtonDesign.classList.remove("AutoplayButtonOn");
+      autpPlayButtonBackground.classList.remove("autoPlayButtonBackgroundOn");
+      autoPlayButtonDesign.classList.add("AutoplayButtonOff");
+      autpPlayButtonBackground.classList.add("autoPlayButtonBackgroundOff");
+    }
+  });
+  
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  let checkRandomSongButton = null;
+  let isClickedrandomButton = false;
+  randomSong.addEventListener("click", (event) => {
+    if (!isClickedrandomButton) {
+      folderTrackCount;
+      
+      checkRandomSongButton = true;
+      sliderUpdater();
+      isClickedrandomButton = true;
+    } else {
+      // Autoplay Off
+      checkRandomSongButton = false;
+      sliderUpdater();
+      isClickedrandomButton = false;
+    }
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 input.addEventListener("change", (event) => {
   document
@@ -79,7 +155,8 @@ input.addEventListener("change", (event) => {
 
   let file = event.target.files[newIndex];
 
-  test.textContent = newIndex;
+  /*test.textContent = `Track Anzahl : ${event.target.files.length} & Track Index ${newIndex}`;*/
+  folderTrackCount = event.target.files.length;
 
 
   if (previousFile !== null) {
@@ -175,12 +252,20 @@ input.addEventListener("change", (event) => {
 });
 
 
+
+
 function sliderUpdater() {
-setInterval(function sliderChanger(){ 
-  slider.value = Math.floor(audio.currentTime);
-  slider.setAttribute("max", Math.floor(audio.duration));
-  if(audio.ended) {
-    autoPlayButtonActive();
-  }
-}, 1000);
+  setInterval(function sliderChanger() { 
+    slider.value = Math.floor(audio.currentTime);
+    slider.setAttribute("max", Math.floor(audio.duration));
+    if (checkAutoPlayButton === true) {
+      if (audio.ended) {
+        autoPlayButtonActive();
+      }
+    } else if (checkAutoPlayButton === false) {
+      if (audio.ended) {
+        audio.pause();
+      }
+    }
+  }, 1000);
 };
