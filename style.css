@@ -100,7 +100,7 @@
   transform: scale(1.2); 
   overflow: hidden;
   z-index: -1;
-  transition: 0.25s all ease;
+  transition: 0.15s all ease;
 }
 
 
