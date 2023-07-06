@@ -16,7 +16,7 @@ const randomSong = document.getElementById("randomSong");
 let audio = null;
 let previousFile = null;
 let newIndex = 0;
-let previousIndex = null;
+let previousIndex = [];
 let folderTrackCount = null;
 let defaultSongCover = document.querySelector("#song");
 defaultSongCover.style.backgroundImage =
@@ -46,9 +46,9 @@ nachstesLiedButton.addEventListener("click", function () {
     pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
   }, 100);
 }
-  else if (checkRandomSongButton === true) {
+  else if (checkRandomSongButton === true || checkRandomSongButton === true && checkAutoPlayButton === true) {
     audio.pause();
-    previousIndex = newIndex;
+    previousIndex.push(newIndex);
     let createRandomSongIndex = Math.floor(Math.random() * folderTrackCount)
     newIndex = createRandomSongIndex;
     input.dispatchEvent(new Event("change"));
@@ -77,8 +77,8 @@ vorherigesLiedButton.addEventListener("click", function () {
     audio.play();
     pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
   }, 100);
-  } else if (checkRandomSongButton === true) {
-    newIndex = previousIndex;
+  } else if (checkRandomSongButton === true || checkAutoPlayButton === true  && checkRandomSongButton === true) {
+    newIndex = previousIndex.pop();
     input.dispatchEvent(new Event("change"));
     setTimeout(() => {
        vorherigesLiedButton.setAttribute("src", "Wallpaper/BackButtonDouble.svg");
@@ -95,6 +95,7 @@ vorherigesLiedButton.addEventListener("click", function () {
 
 
 function autoPlayButtonActive () {
+      if (checkAutoPlayButton === true && checkRandomSongButton === null || checkRandomSongButton === false) {
         audio.pause();
         newIndex++;
         input.dispatchEvent(new Event("change"));
@@ -102,6 +103,15 @@ function autoPlayButtonActive () {
           audio.play();
           pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
         }, 100);
+      } else if (checkAutoPlayButton === true && checkRandomSongButton === true) {
+        audio.pause();
+        newIndex = Math.floor(Math.random() * folderTrackCount);
+        input.dispatchEvent(new Event("change"));
+        setTimeout(() => {
+          audio.play();
+          pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
+        }, 100);
+      }
   };
 
 
@@ -264,18 +274,8 @@ function sliderUpdater() {
     slider.setAttribute("max", Math.floor(audio.duration));
     if (checkAutoPlayButton === true && checkRandomSongButton === true) {
       if (audio.ended) {
-        audio.pause();
-        let createRandomSongIndex = Math.floor(Math.random() * folderTrackCount)
-        newIndex = createRandomSongIndex;
-        input.dispatchEvent(new Event("change"));
-          nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButtonDouble.svg");
-        setTimeout(() => {
-          nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButton.svg");
-        }, 100);
-        setTimeout(() => {
-          audio.play();
-          pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
-        }, 100);
+        previousIndex.push(newIndex);
+      autoPlayButtonActive();
       }
     } else if (checkAutoPlayButton === true && checkRandomSongButton === false) {
       if (audio.ended) {
