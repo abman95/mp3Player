@@ -14,6 +14,7 @@ const autpPlayButtonBackground = document.getElementById("autoPlayButtonBackgrou
 const randomSong = document.getElementById("randomSong");
 
 let audio = null;
+let file = null;
 let previousFile = null;
 let newIndex = 0;
 let previousIndex = [];
@@ -32,21 +33,43 @@ slider.addEventListener("input", function () {
 });
 
 
-nachstesLiedButton.addEventListener("click", function () {
+
+
+
+function waitForMetadata(file) {
+  return new Promise(resolve => {
+    liedPath = URL.createObjectURL(file);
+      audio = new Audio(liedPath);
+      audio.addEventListener("loadedmetadata", () => {
+      resolve();
+    });
+  });
+}
+
+async function playAudioWithMetadata(file) {
+  await waitForMetadata(file);
+
+  return true; // Metadaten erfolgreich geladen
+}
+
+
+
+nachstesLiedButton.addEventListener("click", async function () {
   if(checkRandomSongButton === false || checkRandomSongButton === null){
+    audio.pause();
   sliderUpdater();
+  previousIndex.push(newIndex);
   newIndex++;
-  input.dispatchEvent(new Event("change"));
+  input.dispatchEvent(new Event("change")); 
     nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButtonDouble.svg");
   setTimeout(() => {
     nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButton.svg");
   }, 100);
-  setTimeout(() => {
+  if (await playAudioWithMetadata(file)) {
     audio.play();
     pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
-  }, 100);
-}
-  else if (checkRandomSongButton === true || checkRandomSongButton === true && checkAutoPlayButton === true) {
+  }
+} else if (checkRandomSongButton === true || checkRandomSongButton === true && checkAutoPlayButton === true) {
     audio.pause();
     previousIndex.push(newIndex);
     let createRandomSongIndex = Math.floor(Math.random() * folderTrackCount)
@@ -56,40 +79,24 @@ nachstesLiedButton.addEventListener("click", function () {
     setTimeout(() => {
       nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButton.svg");
     }, 100);
-    setTimeout(() => {
+      if (await playAudioWithMetadata(file)) {
       audio.play();
       pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
-    }, 100);
+    }
   }
 });
 
-vorherigesLiedButton.addEventListener("click", function () {
-  if (checkRandomSongButton === false || checkRandomSongButton === null) {
-    newIndex--;
-    input.dispatchEvent(new Event("change"));
-    setTimeout(() => {
-       vorherigesLiedButton.setAttribute("src", "Wallpaper/BackButtonDouble.svg");
-      setTimeout(() => {
-        vorherigesLiedButton.setAttribute("src", "Wallpaper/BackButton.svg");
-      }, 100);
-  });
-  setTimeout(() => {
-    audio.play();
-    pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
-  }, 100);
-  } else if (checkRandomSongButton === true || checkAutoPlayButton === true  && checkRandomSongButton === true) {
+
+vorherigesLiedButton.addEventListener("click", async function () {
+  if (checkRandomSongButton === true || checkAutoPlayButton === true  && checkRandomSongButton === true || checkRandomSongButton === false || checkRandomSongButton === null) {
     newIndex = previousIndex.pop();
     input.dispatchEvent(new Event("change"));
-    setTimeout(() => {
-       vorherigesLiedButton.setAttribute("src", "Wallpaper/BackButtonDouble.svg");
-      setTimeout(() => {
-        vorherigesLiedButton.setAttribute("src", "Wallpaper/BackButton.svg");
-      }, 100);
-  });
-  setTimeout(() => {
+    vorherigesLiedButton.setAttribute("src", "Wallpaper/BackButtonDouble.svg");
+    if (await playAudioWithMetadata(file)) {
+    vorherigesLiedButton.setAttribute("src", "Wallpaper/BackButton.svg");
     audio.play();
     pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
-  }, 100);
+}
 }
 });
 
@@ -98,6 +105,7 @@ function autoPlayButtonActive () {
       if (checkAutoPlayButton === true && checkRandomSongButton === null || checkRandomSongButton === false) {
         audio.pause();
         newIndex++;
+        previousIndex.push(newIndex);
         input.dispatchEvent(new Event("change"));
         setTimeout(() => {
           audio.play();
@@ -106,6 +114,7 @@ function autoPlayButtonActive () {
       } else if (checkAutoPlayButton === true && checkRandomSongButton === true) {
         audio.pause();
         newIndex = Math.floor(Math.random() * folderTrackCount);
+        previousIndex.push(newIndex);
         input.dispatchEvent(new Event("change"));
         setTimeout(() => {
           audio.play();
@@ -165,7 +174,7 @@ input.addEventListener("change", (event) => {
     .getElementById("weiter")
     .setAttribute("src", "Wallpaper/ForwardButton.svg");
 
-  let file = event.target.files[newIndex];
+  file = event.target.files[newIndex];
 
   test.textContent = `Track Anzahl : ${event.target.files.length} & Track Index ${newIndex}`;
   folderTrackCount = event.target.files.length;
@@ -178,8 +187,9 @@ input.addEventListener("change", (event) => {
       setTimeout(() => {
         pausePlayButton.setAttribute("src", "Wallpaper/PlayButton2.svg");
       }, 100);
-            pausePlayButton.addEventListener("click", function play() {
+            pausePlayButton.addEventListener("click", async function play() {
          if (audio.paused) {
+
            audio.play();
            setTimeout(() => {
              pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
