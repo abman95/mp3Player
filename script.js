@@ -14,6 +14,9 @@ const autpPlayButtonBackground = document.getElementById("autoPlayButtonBackgrou
 const randomSong = document.getElementById("randomSong");
 const randomSongBackground = document.getElementById("randomSongBackground");
 const randomSongButtonOff = document.getElementById("randomSongButtonOff");
+const zuruckspulen = document.getElementById("zuruckspulen");
+const vorspulen = document.getElementById("vorspulen");
+
 
 let audio = null;
 let file = null;
@@ -107,6 +110,15 @@ nachstesLiedButton.addEventListener("click", async function() {
   }
 });
 
+
+vorspulen.addEventListener("click", function() {
+      audio.currentTime += 30;
+    });
+
+
+zuruckspulen.addEventListener("click", function() {
+      audio.currentTime -= 10;
+    });
 
 
 vorherigesLiedButton.addEventListener("click", async function () {
@@ -328,12 +340,5 @@ function sliderUpdater() {
         audio.pause();
       }
     }
-  }, 1000);
+  }, 100);
 };
-
-
-
-function liedWechsel () {
-
-  
-}
