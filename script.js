@@ -12,6 +12,8 @@ const autoPlayButton = document.getElementById("autoPlayCheckbox");
 const autoPlayButtonDesign = document.getElementById("AutoplayButton");
 const autpPlayButtonBackground = document.getElementById("autoPlayButtonBackgroundOff");
 const randomSong = document.getElementById("randomSong");
+const randomSongBackground = document.getElementById("randomSongBackground");
+const randomSongButtonOff = document.getElementById("randomSongButtonOff");
 
 let audio = null;
 let file = null;
@@ -20,7 +22,6 @@ let newIndex = 0;
 const newIndexMinValue = 0;
 let previousIndex = [];
 let folderTrackCount = null;
-let isPlaying = false;
 let defaultSongCover = document.querySelector("#song");
 defaultSongCover.style.backgroundImage =
   "url('Wallpaper/defaultSongCover.jpg')";
@@ -35,10 +36,7 @@ slider.addEventListener("input", function () {
 });
 
 
-
-
-
-function waitForMetadata(file) {
+/*function waitForMetadata(file) {
   return new Promise(resolve => {
     liedPath = URL.createObjectURL(file);
       audio = new Audio(liedPath);
@@ -55,63 +53,82 @@ async function playAudioWithMetadata(file) {
 }
 
 
-
-nachstesLiedButton.addEventListener("click", async function () {
-  if(checkRandomSongButton === false || checkRandomSongButton === null){
-    if(folderTrackCount - 2 >= newIndex) {
-    audio.pause();
-  sliderUpdater();
-  previousIndex.push(newIndex);
-  newIndex++;
-  input.dispatchEvent(new Event("change")); 
-  nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButtonDouble.svg");
-  setTimeout(() => {
-  nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButton.svg");
-  }, 100);
   if (await playAudioWithMetadata(file)) {
-    if (audio.played) {
-      audio.pause();
-      }
-      setTimeout(() => {
-        audio.play();
-        pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
-      }, 500)
+    Funktion die man ausgeführt haben möchte, wenn die Promise erfüllt ist
   }
-}
-} else if (checkRandomSongButton === true || checkRandomSongButton === true && checkAutoPlayButton === true) {
-    previousIndex.push(newIndex);
-    let createRandomSongIndex = Math.floor(Math.random() * folderTrackCount)
-    newIndex = createRandomSongIndex;
-    input.dispatchEvent(new Event("change"));
-    nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButtonDouble.svg");
-    setTimeout(() => {
-      nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButton.svg");
-    }, 100);
-      if (await playAudioWithMetadata(file)) {
-        if (audio.played) {
-          audio.pause();
-          }
+*/
+
+let songChange = null;
+let timeout;
+nachstesLiedButton.addEventListener("click", async function() {
+  if (checkRandomSongButton === false || checkRandomSongButton === null) {
+    if (folderTrackCount - 2 >= newIndex) {
+      clearTimeout(timeout);
+      audio.pause();
+      previousIndex.push(newIndex);
+      newIndex++;
+      input.dispatchEvent(new Event("change"));
+      nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButtonDouble.svg");
+      timeout = setTimeout(() => {
+        nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButton.svg");
+        songChange = true;
+      }, 1000);
+      let songChangeInterval = setInterval(() => {
+        if (songChange) {
           setTimeout(() => {
             audio.play();
             pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
-          }, 500)
+            songChange = false;
+          }, 100);
+        }
+        },1000)
     }
+  } else if (checkRandomSongButton === true) {
+    clearTimeout(timeout);
+    audio.pause();
+    previousIndex.push(newIndex);
+    let createRandomSongIndex = Math.floor(Math.random() * folderTrackCount);
+    newIndex = createRandomSongIndex;
+    input.dispatchEvent(new Event("change"));
+    nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButtonDouble.svg");
+    timeout = setTimeout(() => {
+      nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButton.svg");
+      songChange = true;
+    }, 1000);
+    let songChangeInterval = setInterval(() => {
+      if (songChange) {
+        setTimeout(() => {
+          audio.play();
+          pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
+          songChange = false;
+        }, 100);
+      }
+      },1000)
   }
 });
 
 
+
 vorherigesLiedButton.addEventListener("click", async function () {
-  if (checkRandomSongButton === true || checkAutoPlayButton === true  && checkRandomSongButton === true || checkRandomSongButton === false || checkRandomSongButton === null) {
-    if(previousIndex.length >= 1) {
+  if(previousIndex.length >= 1) {
+    clearTimeout(timeout);
+    audio.pause();
     newIndex = previousIndex.pop();
     input.dispatchEvent(new Event("change"));
+    timeout = setTimeout(() => {
     vorherigesLiedButton.setAttribute("src", "Wallpaper/BackButtonDouble.svg");
-    if (await playAudioWithMetadata(file)) {
+    songChange = true;
+  }, 1000);
+    let songChangeInterval = setInterval(() => {
+      if (songChange) {
+        setTimeout(() => {
+          audio.play();
     vorherigesLiedButton.setAttribute("src", "Wallpaper/BackButton.svg");
-    audio.play();
     pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
+    songChange = false;
+  }, 100);
 }
-}
+},1000)
 }
 });
 
@@ -173,11 +190,19 @@ function autoPlayButtonActive () {
       checkRandomSongButton = true;
       sliderUpdater();
       isClickedrandomButton = true;
+      randomSongBackground.classList.remove("randomSongBackground");
+      randomSongButtonOff.classList.remove("randomSongButtonOff");
+      randomSongButtonOff.classList.add("randomSongButtonOn");
+      randomSongBackground.classList.add("randomSongBackgroundOn");
     } else {
       // Autoplay Off
       checkRandomSongButton = false;
       sliderUpdater();
       isClickedrandomButton = false;
+      randomSongButtonOff.classList.remove("randomSongButtonOn");
+      randomSongBackground.classList.remove("randomSongBackgroundOn");
+      randomSongButtonOff.classList.add("randomSongButtonOff");
+      randomSongBackground.classList.add("randomSongBackground");
     }
   });
 
@@ -191,19 +216,20 @@ input.addEventListener("change", (event) => {
 
   file = event.target.files[newIndex];
 
+
   test.textContent = `Track Anzahl : ${event.target.files.length} & Track Index ${newIndex}`;
   folderTrackCount = event.target.files.length;
 
 
-  if (previousFile !== null) {
+    /* if (previousFile !== null) {
 
-    if (file.name !== previousFile.name) {
+ if (file.name !== previousFile.name) {
       audio.pause();
       setTimeout(() => {
         pausePlayButton.setAttribute("src", "Wallpaper/PlayButton2.svg");
       }, 100);
     }
-  }
+  }*/
   
   previousFile = file;
 
@@ -280,24 +306,17 @@ function sliderUpdater() {
   setInterval(function sliderChanger() { 
     slider.value = Math.floor(audio.currentTime);
     slider.setAttribute("max", Math.floor(audio.duration));
-  }, 1000);
-    if (checkRandomSongButton === null || checkRandomSongButton === false){
-      audio.pause();
-    }
     if (checkAutoPlayButton === true && checkRandomSongButton === true) {
       if (audio.ended) {
-        audio.pause();
         previousIndex.push(newIndex);
       autoPlayButtonActive();
       }
     } else if (checkAutoPlayButton === true && checkRandomSongButton === false) {
       if (audio.ended) {
-        audio.pause();
         autoPlayButtonActive();
       }
     } else if (checkAutoPlayButton === true) {
         if (audio.ended) {
-          audio.pause();
           autoPlayButtonActive();
         }
     } else if (checkAutoPlayButton === false || checkAutoPlayButton === null && checkRandomSongButton === false) {
@@ -309,4 +328,12 @@ function sliderUpdater() {
         audio.pause();
       }
     }
+  }, 1000);
 };
+
+
+
+function liedWechsel () {
+
+  
+}
