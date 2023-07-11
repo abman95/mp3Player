@@ -318,17 +318,17 @@ function sliderUpdater() {
   setInterval(function sliderChanger() { 
     slider.value = Math.floor(audio.currentTime);
     slider.setAttribute("max", Math.floor(audio.duration));
+  }, 100);
+    let sliderUpdaterInterval = setInterval(() => {
     if (checkAutoPlayButton === true && checkRandomSongButton === true) {
       if (audio.ended) {
+        clearInterval(sliderUpdaterInterval);
         previousIndex.push(newIndex);
-      autoPlayButtonActive();
-      }
-    } else if (checkAutoPlayButton === true && checkRandomSongButton === false) {
-      if (audio.ended) {
         autoPlayButtonActive();
       }
     } else if (checkAutoPlayButton === true) {
-        if (audio.ended) {
+          if (audio.ended) {
+          clearInterval(sliderUpdaterInterval);
           autoPlayButtonActive();
         }
     } else if (checkAutoPlayButton === false || checkAutoPlayButton === null && checkRandomSongButton === false) {
@@ -340,5 +340,5 @@ function sliderUpdater() {
         audio.pause();
       }
     }
-  }, 100);
+  }, 1000);
 };
