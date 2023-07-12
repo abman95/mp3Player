@@ -39,7 +39,7 @@ slider.addEventListener("input", function () {
 });
 
 
-/*function waitForMetadata(file) {
+function waitForMetadata(file) {
   return new Promise(resolve => {
     liedPath = URL.createObjectURL(file);
       audio = new Audio(liedPath);
@@ -59,7 +59,7 @@ async function playAudioWithMetadata(file) {
   if (await playAudioWithMetadata(file)) {
     Funktion die man ausgeführt haben möchte, wenn die Promise erfüllt ist
   }
-*/
+
 
 let songChange = null;
 let timeout;
@@ -233,7 +233,7 @@ input.addEventListener("change", (event) => {
   folderTrackCount = event.target.files.length;
 
 
-    /* if (previousFile !== null) {
+     if (previousFile !== null) {
 
  if (file.name !== previousFile.name) {
       audio.pause();
@@ -241,7 +241,7 @@ input.addEventListener("change", (event) => {
         pausePlayButton.setAttribute("src", "Wallpaper/PlayButton2.svg");
       }, 100);
     }
-  }*/
+  }
   
   previousFile = file;
 
