@@ -58,6 +58,7 @@
   width: 25px;
   height: 25px;
   filter: brightness(0) invert(1);
+  user-select: none;
 }
 
 #zuruck {
@@ -68,6 +69,7 @@
   width: 40px;
   height: 40px;
   filter: brightness(0) invert(1);
+  user-select: none;
 }
 
 #stopp {
@@ -79,6 +81,7 @@
     height: 40px;
     cursor: pointer;
     filter: brightness(0) invert(1);
+    user-select: none;
 }
 
 #weiter {
@@ -89,6 +92,7 @@
     width: 40px;
     height: 40px;
     filter: brightness(1) invert(1);
+    user-select: none;
 }
 
 #vorspulen {
@@ -100,6 +104,7 @@
   width: 25px;
   height: 25px;
   filter: brightness(1) invert(1);
+  user-select: none;
 }
 
 #container {
@@ -206,6 +211,7 @@
     cursor: pointer;
     transition: 0.25s all ease;
     filter: brightness(0) invert(1);
+    user-select: none;
   }
 
 #inputButton:hover {
@@ -340,11 +346,13 @@ dialog {
   width: 1000px;
   height: 500px;
   transition: all 2.5s;
+  user-select: none;
 }
 
 dialog::backdrop {
   transition: all ease 0.5s;
   background-color: rgba(0, 0, 0, 0.21);
+  user-select: none;
 }
 }
 

@@ -16,9 +16,32 @@ const randomSongBackground = document.getElementById("randomSongBackground");
 const randomSongButtonOff = document.getElementById("randomSongButtonOff");
 const zuruckspulen = document.getElementById("zuruckspulen");
 const vorspulen = document.getElementById("vorspulen");
+const fileList = document.getElementById("fileList");
 const fileListAuflistung = document.getElementById("fileListAuflistung");
 const fileListAuflistungBild = document.getElementById("fileListAuflistungBild");
 const fileListAuflistungTitel = document.getElementById("fileListAuflistungTitel");
+
+
+
+
+function openDialog() {
+  fileList.showModal();
+
+  // Event Listener hinzufügen
+  document.addEventListener("click", outsideClickHandler);
+}
+
+function outsideClickHandler(event) {
+  if (!fileList.contains(event.target)) {
+    fileList.close();
+
+    // Event Listener entfernen
+    document.removeEventListener("click", outsideClickHandler);
+  }
+}
+
+
+
 
 
 let audio = null;
