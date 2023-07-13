@@ -331,6 +331,21 @@ display: none;
   background-color: rgb(255, 255, 255);
   transition: all ease 0.4s;
 }
+
+
+dialog {
+  background-color: #ffffff;
+  border-color: transparent;
+  border-radius: 20px;
+  width: 1000px;
+  height: 500px;
+  transition: all 2.5s;
+}
+
+dialog::backdrop {
+  transition: all ease 0.5s;
+  background-color: rgba(0, 0, 0, 0.21);
+}
 }
 
 

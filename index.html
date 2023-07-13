@@ -9,12 +9,20 @@
 </head>
 <body>
     <label for="input" class="inputLabel">
-        <input type="file" id="input" accept="mp3, wav" webkitdirectory multiple/>
+      <input type="file" id="input" accept=".mp3, .wav" multiple/>
         <img src="Wallpaper/AddSongButton.svg" id="inputButton">
         <h2></h2>
-        <ul id="fileList">
+        <ul id="fileListBeta">
         </ul>
-      </label>      
+      </label>    
+      <dialog id="fileList" class="fileList">
+        <form method ="dialog">
+          <p>Hi Mom!</p>
+          <span id="fileListAuflistung"></span>
+        </form>
+        <button onclick="fileList.close()">Close</button>
+      </dialog>
+      <button onclick="fileList.showModal()">Open Dialog</button>
     <div id="container">
         <div id="links">
         <div id="song"></div>

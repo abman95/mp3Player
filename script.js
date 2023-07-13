@@ -16,6 +16,9 @@ const randomSongBackground = document.getElementById("randomSongBackground");
 const randomSongButtonOff = document.getElementById("randomSongButtonOff");
 const zuruckspulen = document.getElementById("zuruckspulen");
 const vorspulen = document.getElementById("vorspulen");
+const fileListAuflistung = document.getElementById("fileListAuflistung");
+const fileListAuflistungBild = document.getElementById("fileListAuflistungBild");
+const fileListAuflistungTitel = document.getElementById("fileListAuflistungTitel");
 
 
 let audio = null;
@@ -39,7 +42,7 @@ slider.addEventListener("input", function () {
 });
 
 
-function waitForMetadata(file) {
+/*function waitForMetadata(file) {
   return new Promise(resolve => {
     liedPath = URL.createObjectURL(file);
       audio = new Audio(liedPath);
@@ -59,7 +62,7 @@ async function playAudioWithMetadata(file) {
   if (await playAudioWithMetadata(file)) {
     Funktion die man ausgeführt haben möchte, wenn die Promise erfüllt ist
   }
-
+*/
 
 let songChange = null;
 let timeout;
@@ -111,61 +114,92 @@ nachstesLiedButton.addEventListener("click", async function() {
 });
 
 
+
+
+
 vorspulen.addEventListener("click", function() {
-      audio.currentTime += 30;
+      if(audio.duration-12 > audio.currentTime){
+      audio.currentTime += 10;
+      if(audio.paused) {
+        audio.play();
+        pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
+      }    
+    } else if (audio.duration-2 > audio.currentTime) {
+      audio.currentTime = audio.duration-2;
+      if(audio.paused) {
+        audio.play();
+        pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
+      }    
+    }
     });
 
 
 zuruckspulen.addEventListener("click", function() {
       audio.currentTime -= 10;
+      if (audio.paused){
+        audio.play();
+        pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
+      }
     });
 
 
-vorherigesLiedButton.addEventListener("click", async function () {
-  if(previousIndex.length >= 1) {
-    clearTimeout(timeout);
-    audio.pause();
-    newIndex = previousIndex.pop();
-    input.dispatchEvent(new Event("change"));
-    timeout = setTimeout(() => {
-    vorherigesLiedButton.setAttribute("src", "Wallpaper/BackButtonDouble.svg");
-    songChange = true;
-  }, 1000);
-    let songChangeInterval = setInterval(() => {
-      if (songChange) {
-        setTimeout(() => {
-          audio.play();
-    vorherigesLiedButton.setAttribute("src", "Wallpaper/BackButton.svg");
-    pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
-    songChange = false;
-  }, 100);
-}
-},1000)
-}
-});
+
+    vorherigesLiedButton.addEventListener("click", async function () {
+      if(previousIndex.length >= 1) {
+        clearTimeout(timeout);
+        audio.pause();
+        newIndex = previousIndex.pop();
+        input.dispatchEvent(new Event("change"));
+        vorherigesLiedButton.setAttribute("src", "Wallpaper/BackButtonDouble.svg");
+        timeout = setTimeout(() => {
+        songChange = true;
+      }, 1000);
+        let songChangeInterval = setInterval(() => {
+          if (songChange) {
+            setTimeout(() => {
+              audio.play();
+        vorherigesLiedButton.setAttribute("src", "Wallpaper/BackButton.svg");
+        pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
+        songChange = false;
+      }, 100);
+    }
+    },1000)
+    }
+    });
+
+
 
 
 function autoPlayButtonActive () {
-      if (checkAutoPlayButton === true && checkRandomSongButton === null || checkRandomSongButton === false) {
+        if (folderTrackCount - 2 >= newIndex) {
         audio.pause();
+        if (checkAutoPlayButton === true && checkRandomSongButton === null || checkRandomSongButton === false) {
         newIndex++;
-        previousIndex.push(newIndex);
-        input.dispatchEvent(new Event("change"));
-        setTimeout(() => {
-          audio.play();
-          pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
-        }, 100);
-      } else if (checkAutoPlayButton === true && checkRandomSongButton === true) {
-        audio.pause();
+      } 
+        else if (checkAutoPlayButton === true && checkRandomSongButton === true) {
         newIndex = Math.floor(Math.random() * folderTrackCount);
-        previousIndex.push(newIndex);
-        input.dispatchEvent(new Event("change"));
-        setTimeout(() => {
-          audio.play();
-          pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
-        }, 100);
       }
-  };
+        input.dispatchEvent(new Event("change"));
+        nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButtonDouble.svg");
+        timeout = setTimeout(() => {
+          nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButton.svg");
+          songChange = true;
+        }, 1000);
+        let songChangeInterval = setInterval(() => {
+          if (songChange) {
+            setTimeout(() => {
+              audio.play();
+              pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
+              songChange = false;
+            }, 100);
+          }
+          },1000)
+        } else {
+          if (audio.ended){
+          pausePlayButton.setAttribute("src", "Wallpaper/PlayButton2.svg");
+        }
+      }
+      };
 
 
   let checkAutoPlayButton = null;
@@ -175,7 +209,7 @@ function autoPlayButtonActive () {
     if (!isClicked) {
       // Autoplay On
       checkAutoPlayButton = true;
-      sliderUpdater();
+      pressedButtonsChecker();
       isClicked = true;
       autoPlayButtonDesign.classList.remove("AutoplayButtonOn");
       autpPlayButtonBackground.classList.remove("autoPlayButtonBackgroundOn");
@@ -184,7 +218,7 @@ function autoPlayButtonActive () {
     } else {
       // Autoplay Off
       checkAutoPlayButton = false;
-      sliderUpdater();
+      pressedButtonsChecker();
       isClicked = false;
       autoPlayButtonDesign.classList.remove("AutoplayButtonOn");
       autpPlayButtonBackground.classList.remove("autoPlayButtonBackgroundOn");
@@ -200,7 +234,7 @@ function autoPlayButtonActive () {
     if (!isClickedrandomButton) {
       folderTrackCount;
       checkRandomSongButton = true;
-      sliderUpdater();
+      pressedButtonsChecker();
       isClickedrandomButton = true;
       randomSongBackground.classList.remove("randomSongBackground");
       randomSongButtonOff.classList.remove("randomSongButtonOff");
@@ -209,7 +243,7 @@ function autoPlayButtonActive () {
     } else {
       // Autoplay Off
       checkRandomSongButton = false;
-      sliderUpdater();
+      pressedButtonsChecker();
       isClickedrandomButton = false;
       randomSongButtonOff.classList.remove("randomSongButtonOn");
       randomSongBackground.classList.remove("randomSongBackgroundOn");
@@ -220,11 +254,9 @@ function autoPlayButtonActive () {
 
 
 
-
+let isInputChangeHandled = false;
 input.addEventListener("change", (event) => {
-  document
-    .getElementById("weiter")
-    .setAttribute("src", "Wallpaper/ForwardButton.svg");
+  document.getElementById("weiter").setAttribute("src", "Wallpaper/ForwardButton.svg");
 
   file = event.target.files[newIndex];
 
@@ -232,16 +264,6 @@ input.addEventListener("change", (event) => {
   test.textContent = `Track Anzahl : ${event.target.files.length} & Track Index ${newIndex}`;
   folderTrackCount = event.target.files.length;
 
-
-     if (previousFile !== null) {
-
- if (file.name !== previousFile.name) {
-      audio.pause();
-      setTimeout(() => {
-        pausePlayButton.setAttribute("src", "Wallpaper/PlayButton2.svg");
-      }, 100);
-    }
-  }
   
   previousFile = file;
 
@@ -262,9 +284,7 @@ input.addEventListener("change", (event) => {
         base64String
       )})`;
 
-      document
-        .querySelector("#container")
-        .style.setProperty("--background-image", albumBild);
+      document.querySelector("#container").style.setProperty("--background-image", albumBild);
       document.querySelector("#song").style.backgroundImage = albumBild;
       document.querySelector("#name").textContent = title;
       document.querySelector("#artist").textContent = artist;
@@ -288,6 +308,86 @@ input.addEventListener("change", (event) => {
         Sekunden = Sekunden < 10 ? "0" + Sekunden : Sekunden;
         liedAnfangszeit.textContent = `${Minuten}:${Sekunden}`;
       }, 1);
+
+
+
+
+
+      if (!isInputChangeHandled) {
+        isInputChangeHandled = true;
+      for (let i = 0; i < event.target.files.length; i++) {
+        const file = event.target.files[i];
+
+        (function(index) {
+        jsmediatags.read(file, {
+          onSuccess: function (tag) {
+            const data = tag.tags.picture.data;
+            const format = tag.tags.picture.format;
+            let base64String = "";
+      
+            for (let i = 0; i < data.length; i++) {
+              base64String += String.fromCharCode(data[i]);
+            }
+
+            const albumBild = `url(data:${format};base64,${window.btoa(base64String)})`;
+            const liedName = tag.tags.title;
+            const artistName = tag.tags.artist;
+            const albumName = tag.tags.album;
+      
+            const container = document.createElement("div");
+            container.setAttribute("data-index", index); // Index als Attribut hinzufügen
+            container.style.display = "flex";
+            container.style.justifyContent = "space-between";
+            container.style.border = "1px solid black";
+      
+            const albumBildListe = document.createElement("img");
+            albumBildListe.style.backgroundImage = albumBild;
+            albumBildListe.style.height = "100px";
+            albumBildListe.style.width = "100px";
+            albumBildListe.style.backgroundSize = "cover";
+
+      
+            const albumTitelText = document.createElement("p");
+            albumTitelText.textContent = `${artistName} - ${liedName} - ${albumName} - ${index}`;
+            albumTitelText.style.flexGrow = "1";
+      
+            container.appendChild(albumBildListe);
+            container.appendChild(albumTitelText);
+      
+            fileListAuflistung.appendChild(container);
+
+            container.addEventListener("click", () => {
+              clearTimeout(timeout);
+              audio.pause();
+              previousIndex.push(newIndex);
+              newIndex = index;
+              input.dispatchEvent(new Event("change"));
+              nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButtonDouble.svg");
+              timeout = setTimeout(() => {
+                nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButton.svg");
+                songChange = true;
+              }, 1000);
+              let songChangeInterval = setInterval(() => {
+                if (songChange) {
+                  setTimeout(() => {
+                    audio.play();
+                    pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
+                    songChange = false;
+                  }, 100);
+                }
+                },1000)
+            })
+          }
+        });
+    })(i);
+  }
+
+};
+
+
+
+
+
     },
     onError: function (error) {
       console.log(error);
@@ -298,13 +398,12 @@ input.addEventListener("change", (event) => {
 
 pausePlayButton.addEventListener("click", function play() {
   if (audio.paused) {
-    sliderUpdater()
+    // sliderUpdater()
     audio.play();
     setTimeout(() => {
       pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
     }, 100);
   } else {
-    1;
     audio.pause();
     setTimeout(() => {
       pausePlayButton.setAttribute("src", "Wallpaper/PlayButton2.svg");
@@ -313,34 +412,38 @@ pausePlayButton.addEventListener("click", function play() {
 });
 
 
-
 function sliderUpdater() {
   setInterval(function sliderChanger() { 
     slider.value = Math.floor(audio.currentTime);
     slider.setAttribute("max", Math.floor(audio.duration));
   }, 100);
+};
+sliderUpdater()
+
+
+function pressedButtonsChecker() {
     let sliderUpdaterInterval = setInterval(() => {
     if (checkAutoPlayButton === true && checkRandomSongButton === true) {
       if (audio.ended) {
-        clearInterval(sliderUpdaterInterval);
+        let autoPlayRandomSongInterval = setInterval(() => {
+        clearInterval(autoPlayRandomSongInterval);
         previousIndex.push(newIndex);
         autoPlayButtonActive();
-      }
-    } else if (checkAutoPlayButton === true) {
+      })
+    }
+    } else if (checkAutoPlayButton === true && checkRandomSongButton === false || checkAutoPlayButton === true && checkRandomSongButton === null) {
           if (audio.ended) {
-          clearInterval(sliderUpdaterInterval);
+            let autoPlayInterval = setInterval(() => {
+          clearInterval(autoPlayInterval);
+          previousIndex.push(newIndex);
           autoPlayButtonActive();
+        })
         }
-    } else if (checkAutoPlayButton === false || checkAutoPlayButton === null && checkRandomSongButton === false) {
-      if (audio.ended) {
+    } else {
+      if (audio.ended || audio.currentTime === audio.duration) {
         audio.pause();
+        pausePlayButton.setAttribute("src", "Wallpaper/PlayButton2.svg");
         }
-    } else if (checkAutoPlayButton === false || checkAutoPlayButton === null) {
-      if (audio.ended) {
-        audio.pause();
-      }
     }
   }, 1000);
 };
-
-Test
