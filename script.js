@@ -23,34 +23,27 @@ const fileListAuflistungTitel = document.getElementById("fileListAuflistungTitel
 
 
 
-
-function openDialog() {
-  fileList.showModal();
-
-  // Event Listener hinzufügen
-  document.addEventListener("click", outsideClickHandler);
-}
-
-function outsideClickHandler(event) {
-  if (!fileList.contains(event.target)) {
-    fileList.close();
-
-    // Event Listener entfernen
-    document.removeEventListener("click", outsideClickHandler);
-  }
-}
-
-
-
+  fileList.addEventListener("click", function outsideClickHandler(event) {
+    var rect = fileList.getBoundingClientRect();
+    var xAchse = event.clientX;
+    var yAchse = event.clientY;
+  
+    if (xAchse < rect.left || xAchse >= rect.right || yAchse < rect.top || yAchse >= rect.bottom) {
+      fileList.close();
+    }
+  });
+  
 
 
 let audio = null;
 let file = null;
 let previousFile = null;
 let newIndex = 0;
+let newIndexDialog = 0;
 const newIndexMinValue = 0;
 let previousIndex = [];
-let folderTrackCount = null;
+let letztesIndexPreviousIndex = previousIndex.length - 1;
+let letztesIndexPreviousIndex2 = previousIndex.length - 2;
 let defaultSongCover = document.querySelector("#song");
 defaultSongCover.style.backgroundImage =
   "url('Wallpaper/defaultSongCover.jpg')";
@@ -284,7 +277,7 @@ input.addEventListener("change", (event) => {
   file = event.target.files[newIndex];
 
 
-  test.textContent = `Track Anzahl : ${event.target.files.length} & Track Index ${newIndex}`;
+  /*test.textContent = `Track Anzahl : ${event.target.files.length} & Track Index ${newIndex}`;*/
   folderTrackCount = event.target.files.length;
 
   
@@ -400,6 +393,28 @@ input.addEventListener("change", (event) => {
                 }
                 },1000)
             })
+
+
+            
+
+
+audio.addEventListener("playing", (event) => {
+  setInterval(() => {
+  const containerWithMatchingIndex = document.querySelector(`div[data-index="${newIndex}"]`);
+
+  if (containerWithMatchingIndex) {
+    containerWithMatchingIndex.style.backgroundColor = "grey";
+  } 
+  
+    if (containerWithMatchingIndex && containerWithMatchingIndex !== document.activeElement) {
+      containerWithMatchingIndex.style.backgroundColor = "grey";
+    } else {
+      containerWithMatchingIndex.style.backgroundColor = ""; // Setze den Hintergrund zurück, wenn der Index nicht übereinstimmt oder der Container nicht aktiv ist
+    }
+  }, 100);
+});
+
+            
           }
         });
     })(i);
