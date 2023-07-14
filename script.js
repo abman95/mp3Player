@@ -42,8 +42,6 @@ let newIndex = 0;
 let newIndexDialog = 0;
 const newIndexMinValue = 0;
 let previousIndex = [];
-let letztesIndexPreviousIndex = previousIndex.length - 1;
-let letztesIndexPreviousIndex2 = previousIndex.length - 2;
 let defaultSongCover = document.querySelector("#song");
 defaultSongCover.style.backgroundImage =
   "url('Wallpaper/defaultSongCover.jpg')";
@@ -327,8 +325,6 @@ input.addEventListener("change", (event) => {
 
 
 
-
-
       if (!isInputChangeHandled) {
         isInputChangeHandled = true;
       for (let i = 0; i < event.target.files.length; i++) {
@@ -400,16 +396,17 @@ input.addEventListener("change", (event) => {
 
 audio.addEventListener("playing", (event) => {
   setInterval(() => {
-  const containerWithMatchingIndex = document.querySelector(`div[data-index="${newIndex}"]`);
+    let oneBeforePreviousIndex = previousIndex.length - 1;
+    let oneBeforePreviousIndexValue = previousIndex[oneBeforePreviousIndex];
+    const containerWithMatchingIndex = document.querySelector(`div[data-index="${newIndex}"]`);
+    const containerWithNotMatchingIndex = document.querySelector(`div[data-index="${oneBeforePreviousIndexValue}"]`);
 
   if (containerWithMatchingIndex) {
     containerWithMatchingIndex.style.backgroundColor = "grey";
   } 
   
-    if (containerWithMatchingIndex && containerWithMatchingIndex !== document.activeElement) {
-      containerWithMatchingIndex.style.backgroundColor = "grey";
-    } else {
-      containerWithMatchingIndex.style.backgroundColor = ""; // Setze den Hintergrund zurück, wenn der Index nicht übereinstimmt oder der Container nicht aktiv ist
+    if (containerWithNotMatchingIndex && newIndex !== oneBeforePreviousIndexValue) {
+      containerWithNotMatchingIndex.style.backgroundColor = "";
     }
   }, 100);
 });
