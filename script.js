@@ -264,7 +264,7 @@ input.addEventListener("change", (event) => {
   file = event.target.files[newIndex];
 
 
-  /*test.textContent = `Track Anzahl : ${event.target.files.length} & Track Index ${newIndex}`;*/
+  test.textContent = `Track Anzahl : ${event.target.files.length} & Track Index ${newIndex}`;
   folderTrackCount = event.target.files.length;
 
 
@@ -380,18 +380,26 @@ function mp3FileReader () {
         container.setAttribute("data-index", index); // Index als Attribut hinzufügen
         container.style.display = "flex";
         container.style.justifyContent = "space-between";
-        container.style.border = "1px solid black";
+
+        container.style.boxShadow = "0 0px 3px rgba(0, 0, 0, 0.1)";
+        container.style.borderRadius = "5px";
+        container.style.transition = "all ease 0.5s";
   
         const albumBildListe = document.createElement("img");
         albumBildListe.style.backgroundImage = albumBild;
-        albumBildListe.style.height = "100px";
-        albumBildListe.style.width = "100px";
+        albumBildListe.style.height = "200px";
+        albumBildListe.style.width = "200px";
         albumBildListe.style.backgroundSize = "cover";
   
   
         const albumTitelText = document.createElement("p");
         albumTitelText.textContent = `${artistName} - ${liedName} - ${albumName} - ${index}`;
         albumTitelText.style.flexGrow = "1";
+        albumTitelText.fontFamily = "Graphik0";
+        albumTitelText.style.display = "flex";
+        albumTitelText.style.alignItems = "center";
+        albumTitelText.style.justifyContent = "center";
+        albumTitelText.style.textAlign = "center";
   
         container.appendChild(albumBildListe);
         container.appendChild(albumTitelText);
@@ -440,8 +448,8 @@ function mp3FileReader () {
           if (await playAudioWithMetadata(file)) {
             oneBeforePreviousIndex = previousIndex.length - 1;
             oneBeforePreviousIndexValue = previousIndex[oneBeforePreviousIndex];
-            test.textContent = `${oneBeforePreviousIndexValue} + ${seperatepreviousIndexValue}`;
-            const containerWithMatchingIndex = document.querySelector(`div[data-index="${newIndex}"]`).style.backgroundColor = "grey";
+            //test.textContent = `${oneBeforePreviousIndexValue} + ${seperatepreviousIndexValue}`;
+            const containerWithMatchingIndex = document.querySelector(`div[data-index="${newIndex}"]`).style.backgroundColor = "rgba(0, 0, 0, 0.198)";
             document.querySelector(`div[data-index="${oneBeforePreviousIndexValue}"]`).style.backgroundColor = "";
             vorherigesLiedButton.addEventListener("click", (event)=> {
             if (event){

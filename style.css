@@ -344,19 +344,55 @@ display: none;
 
 
 dialog {
-  background-color: #ffffff;
-  border-color: transparent;
-  border-radius: 20px;
+  box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  border: 0.5px solid rgba(0, 0, 0, 0.198);
+  background-color: #f2f2f2fc;
+  border-radius: 5px;
   width: 1000px;
   height: 500px;
   transition: all 2.5s;
   user-select: none;
+  font-family: Graphik2;
+  font-size: 20px;
 }
 
 dialog::backdrop {
   transition: all ease 0.5s;
   background-color: rgba(0, 0, 0, 0.21);
   user-select: none;
+}
+
+.dialogCloseButton {
+  margin-top: 50px;
+  background-color: #ffffffda;
+  box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  border: 0.5px solid rgba(0, 0, 0, 0.198);
+  width: 1000px;
+  height: 61px;
+  border: none;
+  color: black;
+  font-weight: 400;
+  font-size: 14px;
+  transition: background-color 1s;
+  font-family: Graphik2;
+  z-index: 5;
+}
+
+.dialogCloseButton:hover {
+  background-color: rgba(0, 0, 0, 0.044);
+  transition: 0.4s;
+  color: rgb(44, 0, 31);
+}
+
+#dialogHeadline {
+  text-shadow:  0 0px 10px rgba(0, 0, 0, 0.1);;
+  font-size: 30px;
+  font-family: Graphik1;
+  margin-bottom: 40px;
+  padding-left: auto;
+  padding-right: auto;
 }
 }
 
