@@ -343,19 +343,71 @@ display: none;
 }
 
 
+
+dialog::-webkit-scrollbar {
+  width: 10px;
+}
+
+dialog::-webkit-scrollbar-thumb {
+  background-color: #999;
+  border-radius: 5px;
+}
+
+dialog::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+dialog::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+  border-radius: 5px;
+}
+
+
+
+@keyframes dialogPop {
+  from {
+
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+
+@keyframes dialogClose {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0);
+  }
+}
+
 dialog {
+  scrollbar-width: thin;
+  scrollbar-color: #999 #f1f1f1;
   box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   border: 0.5px solid rgba(0, 0, 0, 0.198);
   background-color: #f2f2f2fc;
   border-radius: 5px;
   width: 1000px;
-  height: 500px;
+  height: 600px;
   transition: all 2.5s;
   user-select: none;
   font-family: Graphik2;
   font-size: 20px;
+  animation: dialogPop 0.3s ease-in-out forwards;
 }
+
+dialog.closed {
+  animation: dialogClose 0.3s ease-in-out forwards;
+}
+
 
 dialog::backdrop {
   transition: all ease 0.5s;
@@ -364,35 +416,44 @@ dialog::backdrop {
 }
 
 .dialogCloseButton {
-  margin-top: 50px;
-  background-color: #ffffffda;
-  box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  border: 0.5px solid rgba(0, 0, 0, 0.198);
-  width: 1000px;
-  height: 61px;
-  border: none;
-  color: black;
-  font-weight: 400;
-  font-size: 14px;
-  transition: background-color 1s;
-  font-family: Graphik2;
-  z-index: 5;
+    margin-top: 50px;
+    background-color: #f2f2f2fc;
+    border: 0.01px solid rgba(0, 0, 0, 0.198);
+    width: 990px;
+    height: 90px;
+    color: black;
+    font-weight: 400;
+    font-size: 14px;
+    transition: background-color 1s;
+    font-family: Graphik2;
+    z-index: 5;
+    bottom: -20px;
+    position: sticky;
 }
 
 .dialogCloseButton:hover {
-  background-color: rgba(0, 0, 0, 0.044);
+  background-color:#ffffffda; 
   transition: 0.4s;
   color: rgb(44, 0, 31);
 }
 
 #dialogHeadline {
+  /* Top und Sticky machen HeaderElemente Sticky */
+  top: -20px;
+  position: sticky;
+
   text-shadow:  0 0px 10px rgba(0, 0, 0, 0.1);;
   font-size: 30px;
   font-family: Graphik1;
-  margin-bottom: 40px;
-  padding-left: auto;
-  padding-right: auto;
+  padding-top: 50px;
+  margin-left: -10px;
+  margin-top: -20px;
+  width: 1010px;
+  height: 100px;
+  z-index: 10;
+  vertical-align: middle;
+  background-color: #f2f2f2fc;
+
 }
 }
 

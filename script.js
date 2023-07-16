@@ -21,11 +21,21 @@ const fileListAuflistung = document.getElementById("fileListAuflistung");
 const fileListAuflistungBild = document.getElementById("fileListAuflistungBild");
 const fileListAuflistungTitel = document.getElementById("fileListAuflistungTitel");
 let coverAsBackgroundImage = document.querySelector("#container");
+const dialogCloseButton = document.getElementById("dialogCloseButton");
 let albumCover = document.querySelector("#song");
 let trackTitle = document.querySelector("#name");
 let trackArtist = document.querySelector("#artist");
 let trackAlbumName = document.querySelector("#album");
 
+
+
+dialogCloseButton.addEventListener("click", function outsideClickHandler(event) {
+  fileList.classList.add("closed");
+  setTimeout(function() {
+    fileList.close();
+    fileList.classList.remove("closed");
+  }, 300);
+});
 
 
   fileList.addEventListener("click", function outsideClickHandler(event) {
@@ -34,13 +44,18 @@ let trackAlbumName = document.querySelector("#album");
     var yAchse = event.clientY;
   
     if (xAchse < rect.left || xAchse >= rect.right || yAchse < rect.top || yAchse >= rect.bottom) {
-      fileList.close();
+      fileList.classList.add("closed");
+      setTimeout(function() {
+        fileList.close();
+        fileList.classList.remove("closed");
+      }, 300);
     }
-  });
+    }
+  );
   
 
 
-
+let audio = null;
 let file = null;
 let newIndex = 0;
 let newIndexDialog = 0;
@@ -277,20 +292,7 @@ input.addEventListener("change", (event) => {
 
 
 
-  audio.onloadedmetadata = function () {
-  const duration = audio.duration;
-  const minutes = Math.floor(duration / 60);
-  let seconds = Math.floor(duration % 60);
-  seconds = seconds < 10 ? "0" + seconds : seconds;
-  liedGesamtZeit.innerHTML = `${minutes}:${seconds}`;
-  };
 
-  setInterval(function aktuelleZeit() {
-  const Minuten = Math.floor(audio.currentTime / 60);
-  let Sekunden = Math.floor(audio.currentTime % 60);
-  Sekunden = Sekunden < 10 ? "0" + Sekunden : Sekunden;
-  liedAnfangszeit.textContent = `${Minuten}:${Sekunden}`;
-  }, 1);
 }
 if (event) {
   inputFileCompleted();
@@ -337,8 +339,7 @@ function mp3FileReader () {
       )})`;
   
       
-  
-  
+
       if (data !== null) {
         coverAsBackgroundImage.style.setProperty("--background-image", albumBild);
         albumCover.style.backgroundImage = albumBild;
@@ -352,7 +353,22 @@ function mp3FileReader () {
   onError: function (error) {
   }
   })
+  audio.onloadedmetadata = function () {
+    const duration = audio.duration;
+    const minutes = Math.floor(duration / 60);
+    let seconds = Math.floor(duration % 60);
+    seconds = seconds < 10 ? "0" + seconds : seconds;
+    liedGesamtZeit.innerHTML = `${minutes}:${seconds}`;
+    };
+  
+    setInterval(function aktuelleZeit() {
+    const Minuten = Math.floor(audio.currentTime / 60);
+    let Sekunden = Math.floor(audio.currentTime % 60);
+    Sekunden = Sekunden < 10 ? "0" + Sekunden : Sekunden;
+    liedAnfangszeit.textContent = `${Minuten}:${Sekunden}`;
+    }, 1);
   }
+
 
 
 
@@ -377,9 +393,11 @@ function mp3FileReader () {
         const albumName = tag.tags.album;
   
         const container = document.createElement("div");
-        container.setAttribute("data-index", index); // Index als Attribut hinzufügen
+
+        container.setAttribute("data-index", index);
         container.style.display = "flex";
         container.style.justifyContent = "space-between";
+
 
         container.style.boxShadow = "0 0px 3px rgba(0, 0, 0, 0.1)";
         container.style.borderRadius = "5px";
@@ -507,10 +525,14 @@ pausePlayButton.addEventListener("click", function play() {
 
 
 function sliderUpdater() {
+
   setInterval(function sliderChanger() { 
+    if (audio){
     slider.value = Math.floor(audio.currentTime);
     slider.setAttribute("max", Math.floor(audio.duration));
+  }
   }, 100);
+
 };
 sliderUpdater()
 
