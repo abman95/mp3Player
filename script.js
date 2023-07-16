@@ -1,5 +1,5 @@
 const jsmediatags = window.jsmediatags;
-
+  
 const nachstesLiedButton = document.getElementById("weiter");
 const vorherigesLiedButton = document.getElementById("zuruck");
 const test = document.querySelector("#test");
@@ -20,6 +20,11 @@ const fileList = document.getElementById("fileList");
 const fileListAuflistung = document.getElementById("fileListAuflistung");
 const fileListAuflistungBild = document.getElementById("fileListAuflistungBild");
 const fileListAuflistungTitel = document.getElementById("fileListAuflistungTitel");
+let coverAsBackgroundImage = document.querySelector("#container");
+let albumCover = document.querySelector("#song");
+let trackTitle = document.querySelector("#name");
+let trackArtist = document.querySelector("#artist");
+let trackAlbumName = document.querySelector("#album");
 
 
 
@@ -35,9 +40,8 @@ const fileListAuflistungTitel = document.getElementById("fileListAuflistungTitel
   
 
 
-let audio = null;
+
 let file = null;
-let previousFile = null;
 let newIndex = 0;
 let newIndexDialog = 0;
 const newIndexMinValue = 0;
@@ -45,6 +49,7 @@ let previousIndex = [];
 let defaultSongCover = document.querySelector("#song");
 defaultSongCover.style.backgroundImage =
   "url('Wallpaper/defaultSongCover.jpg')";
+let liedPath = null; 
 
 
 
@@ -56,28 +61,6 @@ slider.addEventListener("input", function () {
 });
 
 
-/*function waitForMetadata(file) {
-  return new Promise(resolve => {
-    liedPath = URL.createObjectURL(file);
-      audio = new Audio(liedPath);
-      audio.addEventListener("loadedmetadata", () => {
-      resolve();
-    });
-  });
-}
-
-async function playAudioWithMetadata(file) {
-  await waitForMetadata(file);
-
-  return true; // Metadaten erfolgreich geladen
-}
-
-
-  if (await playAudioWithMetadata(file)) {
-    Funktion die man ausgeführt haben möchte, wenn die Promise erfüllt ist
-  }
-*/
-
 let songChange = null;
 let timeout;
 nachstesLiedButton.addEventListener("click", async function() {
@@ -87,7 +70,7 @@ nachstesLiedButton.addEventListener("click", async function() {
       audio.pause();
       previousIndex.push(newIndex);
       newIndex++;
-      input.dispatchEvent(new Event("change"));
+      inputFileCompleted();
       nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButtonDouble.svg");
       timeout = setTimeout(() => {
         nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButton.svg");
@@ -109,7 +92,7 @@ nachstesLiedButton.addEventListener("click", async function() {
     previousIndex.push(newIndex);
     let createRandomSongIndex = Math.floor(Math.random() * folderTrackCount);
     newIndex = createRandomSongIndex;
-    input.dispatchEvent(new Event("change"));
+    inputFileCompleted();
     nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButtonDouble.svg");
     timeout = setTimeout(() => {
       nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButton.svg");
@@ -156,14 +139,19 @@ zuruckspulen.addEventListener("click", function() {
       }
     });
 
-
-
+    let seperatepreviousIndex = null;
+    let seperatepreviousIndexValue = null;
     vorherigesLiedButton.addEventListener("click", async function () {
       if(previousIndex.length >= 1) {
         clearTimeout(timeout);
         audio.pause();
-        newIndex = previousIndex.pop();
-        input.dispatchEvent(new Event("change"));
+        seperatepreviousIndex = previousIndex.map(function(number) {
+          return number * 1;
+        });
+        seperatepreviousIndex.push(newIndex);
+        seperatepreviousIndexValue = seperatepreviousIndex[seperatepreviousIndex.length - 1];
+        boi = newIndex = previousIndex.pop();
+        inputFileCompleted();
         vorherigesLiedButton.setAttribute("src", "Wallpaper/BackButtonDouble.svg");
         timeout = setTimeout(() => {
         songChange = true;
@@ -181,7 +169,7 @@ zuruckspulen.addEventListener("click", function() {
     }
     });
 
-
+    
 
 
 function autoPlayButtonActive () {
@@ -193,7 +181,7 @@ function autoPlayButtonActive () {
         else if (checkAutoPlayButton === true && checkRandomSongButton === true) {
         newIndex = Math.floor(Math.random() * folderTrackCount);
       }
-        input.dispatchEvent(new Event("change"));
+      inputFileCompleted();
         nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButtonDouble.svg");
         timeout = setTimeout(() => {
           nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButton.svg");
@@ -267,9 +255,9 @@ function autoPlayButtonActive () {
   });
 
 
-
-let isInputChangeHandled = false;
+let inputFileCompleted;
 input.addEventListener("change", (event) => {
+  inputFileCompleted = function inputFileCompleted() {
   document.getElementById("weiter").setAttribute("src", "Wallpaper/ForwardButton.svg");
 
   file = event.target.files[newIndex];
@@ -278,162 +266,221 @@ input.addEventListener("change", (event) => {
   /*test.textContent = `Track Anzahl : ${event.target.files.length} & Track Index ${newIndex}`;*/
   folderTrackCount = event.target.files.length;
 
-  
-  previousFile = file;
 
+
+
+  liedPath = URL.createObjectURL(file);
+  audio = new Audio(liedPath);
+  mp3FileReader();
+
+
+
+  audio.onloadedmetadata = function () {
+  const duration = audio.duration;
+  const minutes = Math.floor(duration / 60);
+  let seconds = Math.floor(duration % 60);
+  seconds = seconds < 10 ? "0" + seconds : seconds;
+  liedGesamtZeit.innerHTML = `${minutes}:${seconds}`;
+  };
+
+  setInterval(function aktuelleZeit() {
+  const Minuten = Math.floor(audio.currentTime / 60);
+  let Sekunden = Math.floor(audio.currentTime % 60);
+  Sekunden = Sekunden < 10 ? "0" + Sekunden : Sekunden;
+  liedAnfangszeit.textContent = `${Minuten}:${Sekunden}`;
+  }, 1);
+}
+if (event) {
+  inputFileCompleted();
+}
+});
+
+
+
+
+
+function mp3FileReader () {
   jsmediatags.read(file, {
     onSuccess: function (tag) {
       const album = tag.tags.album;
       const artist = tag.tags.artist;
       const title = tag.tags.title;
-      const data = tag.tags.picture.data;
+  
+      if (title){
+        trackTitle.textContent = title;
+      } else if (!title){
+        trackTitle.textContent = file.name;
+      }
+      if (artist){
+        trackArtist.textContent = artist;
+      } else if (!artist){
+        trackArtist.textContent = "";
+      }
+      if (album){
+        trackAlbumName.textContent = album;
+      } else if (!album){
+        trackAlbumName.textContent = "";
+      }
+      let data = null
+      data = tag.tags.picture.data;
       const format = tag.tags.picture.format;
       let base64String = "";
-
+  
       for (let i = 0; i < data.length; i++) {
         base64String += String.fromCharCode(data[i]);
       }
-
-      const albumBild = `url(data:${format};base64,${window.btoa(
+      
+      let albumBild = `url(data:${format};base64,${window.btoa(
         base64String
       )})`;
-
-      document.querySelector("#container").style.setProperty("--background-image", albumBild);
-      document.querySelector("#song").style.backgroundImage = albumBild;
-      document.querySelector("#name").textContent = title;
-      document.querySelector("#artist").textContent = artist;
-      document.querySelector("#album").textContent = album;
-
-      const liedPath = URL.createObjectURL(file);
-      audio = new Audio(liedPath);
-
-
-      audio.onloadedmetadata = function () {
-        const duration = audio.duration;
-        const minutes = Math.floor(duration / 60);
-        let seconds = Math.floor(duration % 60);
-        seconds = seconds < 10 ? "0" + seconds : seconds;
-        liedGesamtZeit.innerHTML = `${minutes}:${seconds}`;
-      };
-
-      setInterval(function aktuelleZeit() {
-        const Minuten = Math.floor(audio.currentTime / 60);
-        let Sekunden = Math.floor(audio.currentTime % 60);
-        Sekunden = Sekunden < 10 ? "0" + Sekunden : Sekunden;
-        liedAnfangszeit.textContent = `${Minuten}:${Sekunden}`;
-      }, 1);
-
-
-
-      if (!isInputChangeHandled) {
-        isInputChangeHandled = true;
-      for (let i = 0; i < event.target.files.length; i++) {
-        const file = event.target.files[i];
-
-        (function(index) {
-        jsmediatags.read(file, {
-          onSuccess: function (tag) {
-            const data = tag.tags.picture.data;
-            const format = tag.tags.picture.format;
-            let base64String = "";
-      
-            for (let i = 0; i < data.length; i++) {
-              base64String += String.fromCharCode(data[i]);
-            }
-
-            const albumBild = `url(data:${format};base64,${window.btoa(base64String)})`;
-            const liedName = tag.tags.title;
-            const artistName = tag.tags.artist;
-            const albumName = tag.tags.album;
-      
-            const container = document.createElement("div");
-            container.setAttribute("data-index", index); // Index als Attribut hinzufügen
-            container.style.display = "flex";
-            container.style.justifyContent = "space-between";
-            container.style.border = "1px solid black";
-      
-            const albumBildListe = document.createElement("img");
-            albumBildListe.style.backgroundImage = albumBild;
-            albumBildListe.style.height = "100px";
-            albumBildListe.style.width = "100px";
-            albumBildListe.style.backgroundSize = "cover";
-
-      
-            const albumTitelText = document.createElement("p");
-            albumTitelText.textContent = `${artistName} - ${liedName} - ${albumName} - ${index}`;
-            albumTitelText.style.flexGrow = "1";
-      
-            container.appendChild(albumBildListe);
-            container.appendChild(albumTitelText);
-      
-            fileListAuflistung.appendChild(container);
-
-            container.addEventListener("click", () => {
-              clearTimeout(timeout);
-              audio.pause();
-              previousIndex.push(newIndex);
-              newIndex = index;
-              input.dispatchEvent(new Event("change"));
-              nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButtonDouble.svg");
-              timeout = setTimeout(() => {
-                nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButton.svg");
-                songChange = true;
-              }, 1000);
-              let songChangeInterval = setInterval(() => {
-                if (songChange) {
-                  setTimeout(() => {
-                    audio.play();
-                    pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
-                    songChange = false;
-                  }, 100);
-                }
-                },1000)
-            })
-
-
-            
-
-
-audio.addEventListener("playing", (event) => {
-  setInterval(() => {
-    let oneBeforePreviousIndex = previousIndex.length - 1;
-    let oneBeforePreviousIndexValue = previousIndex[oneBeforePreviousIndex];
-    const containerWithMatchingIndex = document.querySelector(`div[data-index="${newIndex}"]`);
-    const containerWithNotMatchingIndex = document.querySelector(`div[data-index="${oneBeforePreviousIndexValue}"]`);
-
-  if (containerWithMatchingIndex) {
-    containerWithMatchingIndex.style.backgroundColor = "grey";
-  } 
   
-    if (containerWithNotMatchingIndex && newIndex !== oneBeforePreviousIndexValue) {
-      containerWithNotMatchingIndex.style.backgroundColor = "";
-    }
-  }, 100);
-});
-
-            
-          }
-        });
-    })(i);
+      
+  
+  
+      if (data !== null) {
+        coverAsBackgroundImage.style.setProperty("--background-image", albumBild);
+        albumCover.style.backgroundImage = albumBild;
+      } else if (data === null){
+        coverAsBackgroundImage.style.setProperty("--background-image", "url('Wallpaper/defaultSongCover.jpg')");
+        albumCover.style.backgroundImage = "url('Wallpaper/defaultSongCover.jpg')";
+      }
+    
+      
+  },
+  onError: function (error) {
+  }
+  })
   }
 
-};
 
 
 
+  input.addEventListener("change", (event) => {
+  for (let i = 0; i < event.target.files.length; i++) {
+    const file = event.target.files[i];
+
+    (function(index) {
+    jsmediatags.read(file, {
+      onSuccess: function (tag) {
+        const data = tag.tags.picture.data;
+        const format = tag.tags.picture.format;
+        let base64String = "";
+  
+        for (let i = 0; i < data.length; i++) {
+          base64String += String.fromCharCode(data[i]);
+        }
+  
+        let albumBild = `url(data:${format};base64,${window.btoa(base64String)})`;
+        const liedName = tag.tags.title;
+        const artistName = tag.tags.artist;
+        const albumName = tag.tags.album;
+  
+        const container = document.createElement("div");
+        container.setAttribute("data-index", index); // Index als Attribut hinzufügen
+        container.style.display = "flex";
+        container.style.justifyContent = "space-between";
+        container.style.border = "1px solid black";
+  
+        const albumBildListe = document.createElement("img");
+        albumBildListe.style.backgroundImage = albumBild;
+        albumBildListe.style.height = "100px";
+        albumBildListe.style.width = "100px";
+        albumBildListe.style.backgroundSize = "cover";
+  
+  
+        const albumTitelText = document.createElement("p");
+        albumTitelText.textContent = `${artistName} - ${liedName} - ${albumName} - ${index}`;
+        albumTitelText.style.flexGrow = "1";
+  
+        container.appendChild(albumBildListe);
+        container.appendChild(albumTitelText);
+  
+        fileListAuflistung.appendChild(container);
+  
+        container.addEventListener("click", () => {
+          clearTimeout(timeout);
+          audio.pause();
+          previousIndex.push(newIndex);
+          newIndex = index;
+          inputFileCompleted();
+          nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButtonDouble.svg");
+          timeout = setTimeout(() => {
+            nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButton.svg");
+            songChange = true;
+          }, 1000);
+          let songChangeInterval = setInterval(() => {
+            if (songChange) {
+              setTimeout(() => {
+                audio.play();
+                pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
+                songChange = false;
+              }, 100);
+            }
+            },1000)
+        })
+
+        
+        let oneBeforePreviousIndex = null;
+        let oneBeforePreviousIndexValue  = null;
+        function waitForMetadata(file) {
+          return new Promise(resolve => {
+            if (oneBeforePreviousIndexValue !== newIndex) {
+              resolve();
+            };
+          });
+        }
+        
+        async function playAudioWithMetadata(file) {
+          await waitForMetadata(file);
+          return true; // Metadaten erfolgreich geladen
+        }
+        
+        async function dialogUpdater() {
+          if (await playAudioWithMetadata(file)) {
+            oneBeforePreviousIndex = previousIndex.length - 1;
+            oneBeforePreviousIndexValue = previousIndex[oneBeforePreviousIndex];
+            let containerWithNotMatchingIndex;
+            const containerWithMatchingIndex = document.querySelector(`div[data-index="${newIndex}"]`).style.backgroundColor = "grey";
+            document.querySelector(`div[data-index="${oneBeforePreviousIndexValue}"]`).style.backgroundColor = "";
+            vorherigesLiedButton.addEventListener("click", (event)=> {
+            if (event){
+              document.querySelector(`div[data-index="${oneBeforePreviousIndexValue}"]`).style.backgroundColor = "";
+            document.querySelector(`div[data-index="${seperatepreviousIndexValue}"]`).style.backgroundColor = "";
+          } 
+          })
+          }
+        }
+        
+
+        setInterval(() => {
+          oneBeforePreviousIndex = previousIndex.length - 1;
+          oneBeforePreviousIndexValue = previousIndex[oneBeforePreviousIndex];
+          if (oneBeforePreviousIndexValue !== newIndex) {
+          dialogUpdater();
+        }
+        }, 100);
 
 
-    },
-    onError: function (error) {
-      console.log(error);
-    },
+      }
+    });
+  })(i);
+  }
   });
-});
+  
+
+
+
+
+
+  
+
+
+
+
 
 
 pausePlayButton.addEventListener("click", function play() {
   if (audio.paused) {
-    // sliderUpdater()
     audio.play();
     setTimeout(() => {
       pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
