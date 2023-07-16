@@ -46,6 +46,7 @@ let newIndex = 0;
 let newIndexDialog = 0;
 const newIndexMinValue = 0;
 let previousIndex = [];
+let dialogCurrentSongUpdater;
 let defaultSongCover = document.querySelector("#song");
 defaultSongCover.style.backgroundImage =
   "url('Wallpaper/defaultSongCover.jpg')";
@@ -206,7 +207,7 @@ function autoPlayButtonActive () {
 
   let checkAutoPlayButton = null;
   let isClicked = false;
-  
+
   autoPlayButton.addEventListener("click", (event) => {
     if (!isClicked) {
       // Autoplay On
@@ -272,6 +273,7 @@ input.addEventListener("change", (event) => {
   liedPath = URL.createObjectURL(file);
   audio = new Audio(liedPath);
   mp3FileReader();
+  dialogCurrentSongUpdater(); 
 
 
 
@@ -351,7 +353,6 @@ function mp3FileReader () {
   }
   })
   }
-
 
 
 
@@ -439,31 +440,34 @@ function mp3FileReader () {
           if (await playAudioWithMetadata(file)) {
             oneBeforePreviousIndex = previousIndex.length - 1;
             oneBeforePreviousIndexValue = previousIndex[oneBeforePreviousIndex];
-            let containerWithNotMatchingIndex;
+            test.textContent = `${oneBeforePreviousIndexValue} + ${seperatepreviousIndexValue}`;
             const containerWithMatchingIndex = document.querySelector(`div[data-index="${newIndex}"]`).style.backgroundColor = "grey";
             document.querySelector(`div[data-index="${oneBeforePreviousIndexValue}"]`).style.backgroundColor = "";
             vorherigesLiedButton.addEventListener("click", (event)=> {
             if (event){
+              document.querySelector(`div[data-index="${seperatepreviousIndexValue}"]`).style.backgroundColor = "";
               document.querySelector(`div[data-index="${oneBeforePreviousIndexValue}"]`).style.backgroundColor = "";
-            document.querySelector(`div[data-index="${seperatepreviousIndexValue}"]`).style.backgroundColor = "";
           } 
           })
           }
         }
         
 
-        setInterval(() => {
+        dialogCurrentSongUpdater = function dialogCurrentSongUpdater() {
           oneBeforePreviousIndex = previousIndex.length - 1;
           oneBeforePreviousIndexValue = previousIndex[oneBeforePreviousIndex];
           if (oneBeforePreviousIndexValue !== newIndex) {
           dialogUpdater();
         }
-        }, 100);
+      }
 
-
+      inputFileCompleted();
       }
     });
   })(i);
+  }
+  if (event) {
+    dialogCurrentSongUpdater();
   }
   });
   
