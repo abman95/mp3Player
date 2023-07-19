@@ -383,7 +383,6 @@ dialog::-webkit-scrollbar-track {
   }
   to {
     opacity: 0;
-    transform: scale(0);
   }
 }
 

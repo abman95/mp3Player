@@ -373,78 +373,78 @@ function mp3FileReader () {
 
 
   input.addEventListener("change", (event) => {
-  for (let i = 0; i < event.target.files.length; i++) {
-    const file = event.target.files[i];
-
-    (function(index) {
-    jsmediatags.read(file, {
-      onSuccess: function (tag) {
-        const data = tag.tags.picture.data;
-        const format = tag.tags.picture.format;
-        let base64String = "";
+    for (let i = 0; i < event.target.files.length; i++) {
+      const file = event.target.files[i];
   
-        for (let i = 0; i < data.length; i++) {
-          base64String += String.fromCharCode(data[i]);
-        }
+      (function(index) {
+      jsmediatags.read(file, {
+        onSuccess: function (tag) {
+          const data = tag.tags.picture.data;
+          const format = tag.tags.picture.format;
+          let base64String = "";
+    
+          for (let i = 0; i < data.length; i++) {
+            base64String += String.fromCharCode(data[i]);
+          }
+    
+          let albumBild = `url(data:${format};base64,${window.btoa(base64String)})`;
+          const liedName = tag.tags.title;
+          const artistName = tag.tags.artist;
+          const albumName = tag.tags.album;
+    
+          const container = document.createElement("div");
   
-        let albumBild = `url(data:${format};base64,${window.btoa(base64String)})`;
-        const liedName = tag.tags.title;
-        const artistName = tag.tags.artist;
-        const albumName = tag.tags.album;
-  
-        const container = document.createElement("div");
-
-        container.setAttribute("data-index", index);
-        container.style.display = "flex";
-        container.style.justifyContent = "space-between";
-
-
-        container.style.boxShadow = "0 0px 3px rgba(0, 0, 0, 0.1)";
-        container.style.borderRadius = "5px";
-        container.style.transition = "all ease 0.5s";
-  
-        const albumBildListe = document.createElement("img");
-        albumBildListe.style.backgroundImage = albumBild;
-        albumBildListe.style.height = "200px";
-        albumBildListe.style.width = "200px";
-        albumBildListe.style.backgroundSize = "cover";
+          container.setAttribute("data-index", index);
+          container.style.display = "flex";
+          container.style.justifyContent = "space-between";
   
   
-        const albumTitelText = document.createElement("p");
-        albumTitelText.textContent = `${artistName} - ${liedName} - ${albumName} - ${index}`;
-        albumTitelText.style.flexGrow = "1";
-        albumTitelText.fontFamily = "Graphik0";
-        albumTitelText.style.display = "flex";
-        albumTitelText.style.alignItems = "center";
-        albumTitelText.style.justifyContent = "center";
-        albumTitelText.style.textAlign = "center";
-  
-        container.appendChild(albumBildListe);
-        container.appendChild(albumTitelText);
-  
-        fileListAuflistung.appendChild(container);
-  
-        container.addEventListener("click", () => {
-          clearTimeout(timeout);
-          audio.pause();
-          previousIndex.push(newIndex);
-          newIndex = index;
-          inputFileCompleted();
-          nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButtonDouble.svg");
-          timeout = setTimeout(() => {
-            nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButton.svg");
-            songChange = true;
-          }, 1000);
-          let songChangeInterval = setInterval(() => {
-            if (songChange) {
-              setTimeout(() => {
-                audio.play();
-                pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
-                songChange = false;
-              }, 100);
-            }
-            },1000)
-        })
+          container.style.boxShadow = "0 0px 3px rgba(0, 0, 0, 0.1)";
+          container.style.borderRadius = "5px";
+          container.style.transition = "all ease 0.5s";
+    
+          const albumBildListe = document.createElement("img");
+          albumBildListe.style.backgroundImage = albumBild;
+          albumBildListe.style.height = "200px";
+          albumBildListe.style.width = "200px";
+          albumBildListe.style.backgroundSize = "cover";
+    
+    
+          const albumTitelText = document.createElement("p");
+          albumTitelText.textContent = `${artistName} - ${liedName} - ${albumName} - ${index}`;
+          albumTitelText.style.flexGrow = "1";
+          albumTitelText.fontFamily = "Graphik0";
+          albumTitelText.style.display = "flex";
+          albumTitelText.style.alignItems = "center";
+          albumTitelText.style.justifyContent = "center";
+          albumTitelText.style.textAlign = "center";
+    
+          container.appendChild(albumBildListe);
+          container.appendChild(albumTitelText);
+    
+          fileListAuflistung.appendChild(container);
+    
+          container.addEventListener("click", () => {
+            clearTimeout(timeout);
+            audio.pause();
+            previousIndex.push(newIndex);
+            newIndex = index;
+            inputFileCompleted();
+            nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButtonDouble.svg");
+            timeout = setTimeout(() => {
+              nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButton.svg");
+              songChange = true;
+            }, 1000);
+            let songChangeInterval = setInterval(() => {
+              if (songChange) {
+                setTimeout(() => {
+                  audio.play();
+                  pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
+                  songChange = false;
+                }, 100);
+              }
+              },1000)
+          })
 
         
         let oneBeforePreviousIndex = null;
@@ -498,31 +498,24 @@ function mp3FileReader () {
   });
   
 
-
-
-
-
   
-
-
-
-
-
-
-pausePlayButton.addEventListener("click", function play() {
-  if (audio.paused) {
-    audio.play();
-    setTimeout(() => {
-      pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
-    }, 100);
-  } else {
-    audio.pause();
-    setTimeout(() => {
+  pausePlayButton.addEventListener("click", function() {
+    if (audio.paused) {
+      if (audio.readyState >= 2) {
+        audio.play();
+        pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
+      } else {
+        audio.addEventListener("canplay", function() {
+          audio.play();
+          pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
+        }, { once: true });
+      }
+    } else {
+      audio.pause();
       pausePlayButton.setAttribute("src", "Wallpaper/PlayButton2.svg");
-    }, 100);
-  }
-});
-
+    }
+  });
+  
 
 function sliderUpdater() {
 
@@ -532,7 +525,6 @@ function sliderUpdater() {
     slider.setAttribute("max", Math.floor(audio.duration));
   }
   }, 100);
-
 };
 sliderUpdater()
 
