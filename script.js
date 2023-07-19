@@ -325,8 +325,16 @@ function mp3FileReader () {
       } else if (!album){
         trackAlbumName.textContent = "";
       }
-      let data = null
-      data = tag.tags.picture.data;
+
+      let data = null;
+
+      if (typeof tag !== 'undefined' && typeof tag.tags !== 'undefined' && typeof tag.tags.picture !== 'undefined') {
+        data = tag.tags.picture.data;
+      } else {
+          coverAsBackgroundImage.style.setProperty("--background-image", "url('Wallpaper/defaultSongCover.jpg')");
+          albumCover.style.backgroundImage = "url('Wallpaper/defaultSongCover.jpg')";
+      } 
+
       const format = tag.tags.picture.format;
       let base64String = "";
   
@@ -338,14 +346,10 @@ function mp3FileReader () {
         base64String
       )})`;
   
-      
 
-      if (data !== null) {
+      if (data === tag.tags.picture.data) {
         coverAsBackgroundImage.style.setProperty("--background-image", albumBild);
         albumCover.style.backgroundImage = albumBild;
-      } else if (data === null){
-        coverAsBackgroundImage.style.setProperty("--background-image", "url('Wallpaper/defaultSongCover.jpg')");
-        albumCover.style.backgroundImage = "url('Wallpaper/defaultSongCover.jpg')";
       }
     
       
