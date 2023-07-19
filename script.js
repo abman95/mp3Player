@@ -189,14 +189,10 @@ zuruckspulen.addEventListener("click", function() {
 
 
 function autoPlayButtonActive () {
+      if (checkAutoPlayButton === true && checkRandomSongButton === null || checkRandomSongButton === false) {
         if (folderTrackCount - 2 >= newIndex) {
         audio.pause();
-        if (checkAutoPlayButton === true && checkRandomSongButton === null || checkRandomSongButton === false) {
         newIndex++;
-      } 
-        else if (checkAutoPlayButton === true && checkRandomSongButton === true) {
-        newIndex = Math.floor(Math.random() * folderTrackCount);
-      }
       inputFileCompleted();
         nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButtonDouble.svg");
         timeout = setTimeout(() => {
@@ -217,7 +213,30 @@ function autoPlayButtonActive () {
           pausePlayButton.setAttribute("src", "Wallpaper/PlayButton2.svg");
         }
       }
-      };
+      } else if (checkAutoPlayButton === true && checkRandomSongButton === true) {
+        newIndex = Math.floor(Math.random() * folderTrackCount);
+      inputFileCompleted();
+        nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButtonDouble.svg");
+        timeout = setTimeout(() => {
+          nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButton.svg");
+          songChange = true;
+        }, 1000);
+        let songChangeInterval = setInterval(() => {
+          if (songChange) {
+            setTimeout(() => {
+              audio.play();
+              pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
+              songChange = false;
+            }, 100);
+          }
+          },1000)
+        } else {
+          if (audio.ended){
+          pausePlayButton.setAttribute("src", "Wallpaper/PlayButton2.svg");
+        }
+      }
+    };
+
 
 
   let checkAutoPlayButton = null;

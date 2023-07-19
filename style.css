@@ -113,6 +113,7 @@
     grid-gap: 50px; /* Hier den gewünschten Abstand einstellen */
     display: grid;
     grid-template-areas: "links rechts";
+    transition: 1s all ease;
 }
   
 #container::before {
@@ -128,7 +129,11 @@
   transform: scale(1.2); 
   overflow: hidden;
   z-index: -1;
-  transition: 0.1s all ease;
+  transition: 1s all ease;
+}
+
+#container::after {
+  transition: 1s all ease;
 }
 
 
@@ -174,7 +179,7 @@
     color: white;
     text-shadow: 0.5px 0.5px 0.5px black;
     font-size: 15px;
-    transition: all ease 0.4s;
+    transition: all ease 1s;
   }
 
   #slider { 
