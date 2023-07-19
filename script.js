@@ -354,9 +354,16 @@ function mp3FileReader () {
     
       
   },
-  onError: function (error) {
+  onError: function (error){
+      trackTitle.textContent = file.name;
+      trackArtist.textContent = "";
+      trackAlbumName.textContent = "";
+      coverAsBackgroundImage.style.setProperty("--background-image", "url('Wallpaper/defaultSongCover.jpg')");
+      albumCover.style.backgroundImage = "url('Wallpaper/defaultSongCover.jpg')";
   }
   })
+
+
   audio.onloadedmetadata = function () {
     const duration = audio.duration;
     const minutes = Math.floor(duration / 60);
@@ -381,125 +388,198 @@ function mp3FileReader () {
       const file = event.target.files[i];
   
       (function(index) {
-      jsmediatags.read(file, {
-        onSuccess: function (tag) {
-          const data = tag.tags.picture.data;
-          const format = tag.tags.picture.format;
-          let base64String = "";
-    
-          for (let i = 0; i < data.length; i++) {
-            base64String += String.fromCharCode(data[i]);
-          }
-    
-          let albumBild = `url(data:${format};base64,${window.btoa(base64String)})`;
-          const liedName = tag.tags.title;
-          const artistName = tag.tags.artist;
-          const albumName = tag.tags.album;
-    
-          const container = document.createElement("div");
+        jsmediatags.read(file, {
+          onSuccess: function (tag) {
+            let album = tag.tags.album;
+            let artist = tag.tags.artist;
+            let title = tag.tags.title;
   
-          container.setAttribute("data-index", index);
-          container.style.display = "flex";
-          container.style.justifyContent = "space-between";
+            if (!title) {
+              title = file.name;
+            }
+            if (!artist) {
+              artist = "";
+            }
+            if (!album) {
+              album = "";
+            }
   
+            let data = null;
+            let albumBild = "";
   
-          container.style.boxShadow = "0 0px 3px rgba(0, 0, 0, 0.1)";
-          container.style.borderRadius = "5px";
-          container.style.transition = "all ease 0.5s";
-    
-          const albumBildListe = document.createElement("img");
-          albumBildListe.style.backgroundImage = albumBild;
-          albumBildListe.style.height = "200px";
-          albumBildListe.style.width = "200px";
-          albumBildListe.style.backgroundSize = "cover";
-    
-    
-          const albumTitelText = document.createElement("p");
-          albumTitelText.textContent = `${artistName} - ${liedName} - ${albumName} - ${index}`;
-          albumTitelText.style.flexGrow = "1";
-          albumTitelText.fontFamily = "Graphik0";
-          albumTitelText.style.display = "flex";
-          albumTitelText.style.alignItems = "center";
-          albumTitelText.style.justifyContent = "center";
-          albumTitelText.style.textAlign = "center";
-    
-          container.appendChild(albumBildListe);
-          container.appendChild(albumTitelText);
-    
-          fileListAuflistung.appendChild(container);
-    
-          container.addEventListener("click", () => {
-            clearTimeout(timeout);
-            audio.pause();
-            previousIndex.push(newIndex);
-            newIndex = index;
-            inputFileCompleted();
-            nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButtonDouble.svg");
-            timeout = setTimeout(() => {
-              nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButton.svg");
-              songChange = true;
-            }, 1000);
-            let songChangeInterval = setInterval(() => {
-              if (songChange) {
-                setTimeout(() => {
-                  audio.play();
-                  pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
-                  songChange = false;
-                }, 100);
+            if (typeof tag !== 'undefined' && typeof tag.tags !== 'undefined' && typeof tag.tags.picture !== 'undefined') {
+              data = tag.tags.picture.data;
+  
+              const format = tag.tags.picture.format;
+              let base64String = "";
+  
+              for (let i = 0; i < data.length; i++) {
+                base64String += String.fromCharCode(data[i]);
               }
-              },1000)
-          })
-
-        
-        let oneBeforePreviousIndex = null;
-        let oneBeforePreviousIndexValue  = null;
-        function waitForMetadata(file) {
-          return new Promise(resolve => {
-            if (oneBeforePreviousIndexValue !== newIndex) {
-              resolve();
-            };
-          });
-        }
-        
-        async function playAudioWithMetadata(file) {
-          await waitForMetadata(file);
-          return true; // Metadaten erfolgreich geladen
-        }
-        
-        async function dialogUpdater() {
-          if (await playAudioWithMetadata(file)) {
-            oneBeforePreviousIndex = previousIndex.length - 1;
-            oneBeforePreviousIndexValue = previousIndex[oneBeforePreviousIndex];
-            //test.textContent = `${oneBeforePreviousIndexValue} + ${seperatepreviousIndexValue}`;
-            const containerWithMatchingIndex = document.querySelector(`div[data-index="${newIndex}"]`).style.backgroundColor = "rgba(0, 0, 0, 0.198)";
-            document.querySelector(`div[data-index="${oneBeforePreviousIndexValue}"]`).style.backgroundColor = "";
-            vorherigesLiedButton.addEventListener("click", (event)=> {
-            if (event){
-              document.querySelector(`div[data-index="${seperatepreviousIndexValue}"]`).style.backgroundColor = "";
-              document.querySelector(`div[data-index="${oneBeforePreviousIndexValue}"]`).style.backgroundColor = "";
-          } 
-          })
+  
+              albumBild = `url(data:${format};base64,${window.btoa(base64String)})`;
+            } else {
+              albumBild = "url('Wallpaper/defaultSongCover.jpg')";
+            }
+  
+            const container = document.createElement("div");
+            container.setAttribute("data-index", index);
+  
+            container.style.display = "flex";
+            container.style.justifyContent = "space-between";
+            container.style.boxShadow = "0 0px 3px rgba(0, 0, 0, 0.1)";
+            container.style.borderRadius = "5px";
+            container.style.transition = "all ease 0.5s";
+  
+            const albumBildListe = document.createElement("img");
+            albumBildListe.style.backgroundImage = albumBild;
+            albumBildListe.style.height = "200px";
+            albumBildListe.style.width = "200px";
+            albumBildListe.style.backgroundSize = "cover";
+  
+            const albumTitelText = document.createElement("p");
+            albumTitelText.textContent = `${artist} - ${title} - ${album} - ${index}`;
+            albumTitelText.style.flexGrow = "1";
+            albumTitelText.style.fontFamily = "Graphik0";
+            albumTitelText.style.display = "flex";
+            albumTitelText.style.alignItems = "center";
+            albumTitelText.style.justifyContent = "center";
+            albumTitelText.style.textAlign = "center";
+  
+            container.appendChild(albumBildListe);
+            container.appendChild(albumTitelText);
+  
+            fileListAuflistung.appendChild(container);
+  
+            container.addEventListener("click", () => {
+              clearTimeout(timeout);
+              audio.pause();
+              previousIndex.push(newIndex);
+              newIndex = index;
+              inputFileCompleted();
+              nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButtonDouble.svg");
+              timeout = setTimeout(() => {
+                nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButton.svg");
+                songChange = true;
+              }, 1000);
+              let songChangeInterval = setInterval(() => {
+                if (songChange) {
+                  setTimeout(() => {
+                    audio.play();
+                    pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
+                    songChange = false;
+                  }, 100);
+                }
+              }, 1000);
+            });
+  
+            let oneBeforePreviousIndex = null;
+            let oneBeforePreviousIndexValue  = null;
+            function waitForMetadata(file) {
+              return new Promise(resolve => {
+                if (oneBeforePreviousIndexValue !== newIndex) {
+                  resolve();
+                };
+              });
+            }
+            
+            async function playAudioWithMetadata(file) {
+              await waitForMetadata(file);
+              return true;
+            }
+            
+            async function dialogUpdater() {
+              if (await playAudioWithMetadata(file)) {
+                oneBeforePreviousIndex = previousIndex.length - 1;
+                oneBeforePreviousIndexValue = previousIndex[oneBeforePreviousIndex];
+                const containerWithMatchingIndex = document.querySelector(`div[data-index="${newIndex}"]`).style.backgroundColor = "rgba(0, 0, 0, 0.198)";
+                document.querySelector(`div[data-index="${oneBeforePreviousIndexValue}"]`).style.backgroundColor = "";
+                vorherigesLiedButton.addEventListener("click", (event)=> {
+                if (event){
+                  document.querySelector(`div[data-index="${seperatepreviousIndexValue}"]`).style.backgroundColor = "";
+                  document.querySelector(`div[data-index="${oneBeforePreviousIndexValue}"]`).style.backgroundColor = "";
+              } 
+              })
+              }
+            }
+            
+    
+            dialogCurrentSongUpdater = function dialogCurrentSongUpdater() {
+              oneBeforePreviousIndex = previousIndex.length - 1;
+              oneBeforePreviousIndexValue = previousIndex[oneBeforePreviousIndex];
+              if (oneBeforePreviousIndexValue !== newIndex) {
+              dialogUpdater();
+            }
           }
-        }
-        
+  
+            inputFileCompleted();
+          },
+          onError: function (error) {
+            const track = file.name;
+            const artist = "";
+            const album = "";
+            const albumBild = "url('Wallpaper/defaultSongCover.jpg')";
+          
+            const container = document.createElement("div");
+            container.setAttribute("data-index", index);
+          
+            container.style.display = "flex";
+            container.style.justifyContent = "space-between";
+            container.style.boxShadow = "0 0px 3px rgba(0, 0, 0, 0.1)";
+            container.style.borderRadius = "5px";
+            container.style.transition = "all ease 0.5s";
+          
+            const albumBildListe = document.createElement("img");
+            albumBildListe.style.backgroundImage = albumBild;
+            albumBildListe.style.height = "200px";
+            albumBildListe.style.width = "200px";
+            albumBildListe.style.backgroundSize = "cover";
+          
+            const albumTitelText = document.createElement("p");
+            albumTitelText.textContent = `${artist} - ${track} - ${album} - ${index}`;
+            albumTitelText.style.flexGrow = "1";
+            albumTitelText.style.fontFamily = "Graphik0";
+            albumTitelText.style.display = "flex";
+            albumTitelText.style.alignItems = "center";
+            albumTitelText.style.justifyContent = "center";
+            albumTitelText.style.textAlign = "center";
+          
+            container.appendChild(albumBildListe);
+            container.appendChild(albumTitelText);
+          
+            fileListAuflistung.appendChild(container);
 
-        dialogCurrentSongUpdater = function dialogCurrentSongUpdater() {
-          oneBeforePreviousIndex = previousIndex.length - 1;
-          oneBeforePreviousIndexValue = previousIndex[oneBeforePreviousIndex];
-          if (oneBeforePreviousIndexValue !== newIndex) {
-          dialogUpdater();
-        }
-      }
-
-      inputFileCompleted();
-      }
-    });
-  })(i);
-  }
-  if (event) {
-    dialogCurrentSongUpdater();
-  }
+            container.addEventListener("click", () => {
+              clearTimeout(timeout);
+              audio.pause();
+              previousIndex.push(newIndex);
+              newIndex = index;
+              inputFileCompleted();
+              nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButtonDouble.svg");
+              timeout = setTimeout(() => {
+                nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButton.svg");
+                songChange = true;
+              }, 1000);
+              let songChangeInterval = setInterval(() => {
+                if (songChange) {
+                  setTimeout(() => {
+                    audio.play();
+                    pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
+                    songChange = false;
+                  }, 100);
+                }
+              }, 1000);
+            });
+          }
+        });
+      })(i);
+    }
+    if (event) {
+      dialogCurrentSongUpdater();
+    }
   });
+  
+
   
 
   
