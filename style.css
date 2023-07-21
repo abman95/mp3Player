@@ -136,6 +136,11 @@
   transition: 1s all ease;
 }
 
+#test {
+  padding-top: 10px;
+  font-size: 15px;
+  font-family: Graphik0;
+}
 
   #links {
     padding-top: 20px;
@@ -157,6 +162,8 @@
 
   #artist {
     font-family: Graphik1;
+    margin-top: -10px;
+    margin-bottom: 0;
     color: white;
     text-shadow: 0.5px 0.5px 0.5px black;
     font-size: 35px;
@@ -182,14 +189,14 @@
     transition: all ease 1s;
   }
 
-  #slider { 
+  #slider {
     width: 350px;
-    margin-top: 60px;
+    margin-top: 40px;
     cursor: pointer;
   }
 
   #anfang {
-    margin: 80px 0px 0px 2px;
+    margin: 60px 0px 0px 2px;
     position: fixed;
     font-family: Graphik0;
     font-size: 15px;
@@ -199,7 +206,7 @@
   }
 
   #ende {
-    margin: 80px 0 0 -35px;
+    margin: 60px 0 0 -35px;
     position: fixed;
     font-family: Graphik0;
     font-size: 15px;
@@ -244,15 +251,26 @@ input[type='range']::-webkit-slider-thumb {
   box-shadow: -200px 0 0 200px #ffffffaf;
 }
 
+
+
+#shuffleAndAutoplayButtonContainer {
+  display: flex;
+}
+
+
+#shuffleAndAutoplayButtonContainerLeft {
+  flex-basis: 50%;
+}
+
 #autoPlayCheckbox {
   display: none;
 }
 
 .AutoplayButton {
+  margin: -22px 0px 0px 120px;
   font-family: Graphik0;
   color: #ffffffee;
   user-select: none;
-  margin: 5px auto 0px 150px;
   width: 25px;
   height: 25px;
   border-radius: 35px;
@@ -262,10 +280,10 @@ input[type='range']::-webkit-slider-thumb {
 }
 
 .AutoplayButtonOn {
+  margin: -22px 0px 0px 145px;
   font-family: Graphik0;
   color: #ffffffee;
   user-select: none;
-  margin: 5px auto 0px 180px;
   width: 25px;
   height: 25px;
   border-radius: 35px;
@@ -275,7 +293,7 @@ input[type='range']::-webkit-slider-thumb {
 }
 
 .autoPlayButtonBackgroundOff {
-  margin: 15px auto -28px 150px;
+  margin: 30px 0px 0px 120px;
   background-color: rgba(208, 208, 208, 0.342);
   border-radius: 35px;
   width: 50px;
@@ -285,7 +303,7 @@ input[type='range']::-webkit-slider-thumb {
 }
 
 .autoPlayButtonBackgroundOn {
-  margin: 15px auto -28px 150px;
+  margin: 30px 0px 0px 120px;
   background-image: linear-gradient(to right, rgba(0, 255, 0, 0.5), rgba(208, 208, 208, 0.342));
   border-radius: 35px;
   width: 50px;
@@ -297,12 +315,16 @@ input[type='range']::-webkit-slider-thumb {
 
 
 
+#shuffleAndAutoplayButtonContainerRight {
+  flex-basis: 50%;
+}
+
 #randomSong {
 display: none;
 }
 
 .randomSongBackground {
-  margin: 15px auto -28px auto;
+  margin: 30px 120px 0px 0px;
   background-color: rgba(208, 208, 208, 0.342);
   border-radius: 35px;
   width: 50px;
@@ -312,7 +334,7 @@ display: none;
 }
 
 .randomSongBackgroundOn {
-  margin: 15px auto -28px auto;
+  margin: 30px 120px 0px 0px;
   background-image: linear-gradient(to right, rgba(0, 255, 0, 0.5), rgba(208, 208, 208, 0.342));
   border-radius: 35px;
   width: 50px;
@@ -322,10 +344,10 @@ display: none;
 }
 
 .randomSongButtonOff {
+  margin: -22px 120px 0px 0px;
   font-family: Graphik0;
   color: #ffffffee;
   user-select: none;
-  margin: 5px auto 0px 45%;
   width: 25px;
   height: 25px;
   border-radius: 35px;
@@ -335,10 +357,10 @@ display: none;
 }
 
 .randomSongButtonOn {
+  margin: -22px 120px 0px 25px;
   font-family: Graphik0;
   color: #ffffffee;
   user-select: none;
-  margin: 5px auto 0px 50%;
   width: 25px;
   height: 25px;
   border-radius: 35px;
@@ -390,6 +412,21 @@ dialog::-webkit-scrollbar-track {
     opacity: 0;
   }
 }
+
+
+.dialogButton {
+  cursor: pointer;
+  position: fixed;
+  display: flex;
+  width: 25px;
+  margin: -60px 0px 0px 35px;
+  transition: all ease 1s;
+}
+
+.dialogButton:hover {
+  filter: brightness(1) invert(0.3);
+}
+
 
 dialog {
   scrollbar-width: thin;

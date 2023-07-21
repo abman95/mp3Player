@@ -191,6 +191,7 @@ zuruckspulen.addEventListener("click", function() {
 function autoPlayButtonActive () {
       if (checkAutoPlayButton === true && checkRandomSongButton === null || checkRandomSongButton === false) {
         if (folderTrackCount - 2 >= newIndex) {
+        previousIndex.push(newIndex);
         audio.pause();
         newIndex++;
       inputFileCompleted();
@@ -214,6 +215,7 @@ function autoPlayButtonActive () {
         }
       }
       } else if (checkAutoPlayButton === true && checkRandomSongButton === true) {
+        previousIndex.push(newIndex);
         newIndex = Math.floor(Math.random() * folderTrackCount);
       inputFileCompleted();
         nachstesLiedButton.setAttribute("src", "Wallpaper/ForwardButtonDouble.svg");
@@ -298,7 +300,7 @@ input.addEventListener("change", (event) => {
   file = event.target.files[newIndex];
 
 
-  test.textContent = `Track Anzahl : ${event.target.files.length} & Track Index ${newIndex}`;
+  test.textContent = `Track Anzahl : ${event.target.files.length} & Track Index ${newIndex+1}`;
   folderTrackCount = event.target.files.length;
 
 
@@ -638,7 +640,6 @@ function pressedButtonsChecker() {
       if (audio.ended) {
         let autoPlayRandomSongInterval = setInterval(() => {
         clearInterval(autoPlayRandomSongInterval);
-        previousIndex.push(newIndex);
         autoPlayButtonActive();
       })
     }
@@ -646,7 +647,6 @@ function pressedButtonsChecker() {
           if (audio.ended) {
             let autoPlayInterval = setInterval(() => {
           clearInterval(autoPlayInterval);
-          previousIndex.push(newIndex);
           autoPlayButtonActive();
         })
         }
