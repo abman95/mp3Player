@@ -8,12 +8,10 @@ const liedAnfangszeit = document.getElementById("anfang");
 const liedGesamtZeit = document.getElementById("ende");
 const input = document.querySelector("#input");
 const slider = document.querySelector("input[type='range']");
-const autoPlayButton = document.getElementById("autoPlayCheckbox");
-const autoPlayButtonDesign = document.getElementById("AutoplayButton");
-const autpPlayButtonBackground = document.getElementById("autoPlayButtonBackgroundOff");
-const randomSong = document.getElementById("randomSong");
+const autoPlayButton = document.getElementById("autoPlayButton");
+const autoPlayButtonImage = document.getElementById("autoPlayButtonImage");
 const randomSongBackground = document.getElementById("randomSongBackground");
-const randomSongButtonOff = document.getElementById("randomSongButtonOff");
+const randomSong = document.getElementById("randomSong");
 const zuruckspulen = document.getElementById("zuruckspulen");
 const vorspulen = document.getElementById("vorspulen");
 const fileList = document.getElementById("fileList");
@@ -136,13 +134,21 @@ vorspulen.addEventListener("click", function() {
       if(audio.paused) {
         audio.play();
         pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
-      }    
+      } 
+      vorspulen.style.transform = "rotate(15deg)";
+      setTimeout(()=> {
+        vorspulen.style.transform = "rotate(0deg)";
+      }, 700);      
     } else if (audio.duration-2 > audio.currentTime) {
       audio.currentTime = audio.duration-2;
       if(audio.paused) {
         audio.play();
         pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
-      }    
+      }
+      vorspulen.style.transform = "rotate(15deg)";
+      setTimeout(()=> {
+        vorspulen.style.transform = "rotate(0deg)";
+      }, 700);         
     }
     });
 
@@ -153,6 +159,10 @@ zuruckspulen.addEventListener("click", function() {
         audio.play();
         pausePlayButton.setAttribute("src", "Wallpaper/PauseButton.svg");
       }
+        zuruckspulen.style.transform = "rotate(345deg)";
+        setTimeout(()=> {
+          zuruckspulen.style.transform = "rotate(360deg)";
+        }, 700); 
     });
 
     let seperatepreviousIndex = null;
@@ -250,44 +260,48 @@ function autoPlayButtonActive () {
       checkAutoPlayButton = true;
       pressedButtonsChecker();
       isClicked = true;
-      autoPlayButtonDesign.classList.remove("AutoplayButtonOn");
-      autpPlayButtonBackground.classList.remove("autoPlayButtonBackgroundOn");
-      autoPlayButtonDesign.classList.add("AutoplayButtonOn");
-      autpPlayButtonBackground.classList.add("autoPlayButtonBackgroundOn");
+      autoPlayButton.classList.remove("autoPlayButton");
+      autoPlayButtonImage.classList.remove("autoPlayButtonImage");
+      autoPlayButton.classList.add("autoPlayButtonOn");
+      autoPlayButtonImage.classList.add("autoPlayButtonImageOn");
+      autoPlayButtonImage.setAttribute("src", "Wallpaper/autoplayButtonOn.svg");
     } else {
       // Autoplay Off
       checkAutoPlayButton = false;
       pressedButtonsChecker();
       isClicked = false;
-      autoPlayButtonDesign.classList.remove("AutoplayButtonOn");
-      autpPlayButtonBackground.classList.remove("autoPlayButtonBackgroundOn");
-      autoPlayButtonDesign.classList.add("AutoplayButtonOff");
-      autpPlayButtonBackground.classList.add("autoPlayButtonBackgroundOff");
+      autoPlayButton.classList.remove("autoPlayButtonOn");
+      autoPlayButtonImage.classList.remove("autoPlayButtonImageOn");
+      autoPlayButton.classList.add("autoPlayButton");
+      autoPlayButtonImage.classList.add("autoPlayButtonImage");
+      autoPlayButtonImage.setAttribute("src", "Wallpaper/autoplayButtonOff.svg");
     }
   });
 
 
   let checkRandomSongButton = null;
   let isClickedrandomButton = false;
-  randomSong.addEventListener("click", (event) => {
+  randomSongBackground.addEventListener("click", (event) => {
     if (!isClickedrandomButton) {
       folderTrackCount;
       checkRandomSongButton = true;
       pressedButtonsChecker();
       isClickedrandomButton = true;
+      randomSong.classList.remove("randomSong");
       randomSongBackground.classList.remove("randomSongBackground");
-      randomSongButtonOff.classList.remove("randomSongButtonOff");
-      randomSongButtonOff.classList.add("randomSongButtonOn");
+      randomSong.classList.add("randomSongOn");
       randomSongBackground.classList.add("randomSongBackgroundOn");
+      randomSong.setAttribute("src", "Wallpaper/shuffleButton.svg");
     } else {
       // Autoplay Off
       checkRandomSongButton = false;
       pressedButtonsChecker();
       isClickedrandomButton = false;
-      randomSongButtonOff.classList.remove("randomSongButtonOn");
+      randomSong.classList.remove("randomSongOn");
       randomSongBackground.classList.remove("randomSongBackgroundOn");
-      randomSongButtonOff.classList.add("randomSongButtonOff");
+      randomSong.classList.add("randomSong");
       randomSongBackground.classList.add("randomSongBackground");
+      randomSong.setAttribute("src", "Wallpaper/unshuffleButton2.svg");
     }
   });
 
@@ -300,7 +314,7 @@ input.addEventListener("change", (event) => {
   file = event.target.files[newIndex];
 
 
-  test.textContent = `Track Anzahl : ${event.target.files.length} & Track Index ${newIndex+1}`;
+  test.textContent = `Track Anzahl: ${event.target.files.length} & Aktueller Track: ${newIndex+1}`;
   folderTrackCount = event.target.files.length;
 
 
@@ -454,8 +468,8 @@ function mp3FileReader () {
   
             const albumBildListe = document.createElement("img");
             albumBildListe.style.backgroundImage = albumBild;
-            albumBildListe.style.height = "200px";
-            albumBildListe.style.width = "200px";
+            albumBildListe.style.height = "150px";
+            albumBildListe.style.width = "150px";
             albumBildListe.style.backgroundSize = "cover";
   
             const albumTitelText = document.createElement("p");
@@ -552,8 +566,8 @@ function mp3FileReader () {
           
             const albumBildListe = document.createElement("img");
             albumBildListe.style.backgroundImage = albumBild;
-            albumBildListe.style.height = "200px";
-            albumBildListe.style.width = "200px";
+            albumBildListe.style.height = "150px";
+            albumBildListe.style.width = "150px";
             albumBildListe.style.backgroundSize = "cover";
           
             const albumTitelText = document.createElement("p");

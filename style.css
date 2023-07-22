@@ -50,7 +50,7 @@
 }
 
 
-#zuruckspulen {
+.zuruckspulen {
   background-size: cover;
   margin-top: 15px;
   margin-right: 25px;
@@ -60,6 +60,8 @@
   height: 25px;
   filter: brightness(0) invert(1);
   user-select: none;
+  transition: all ease 0.15s;
+  transform: rotate(360deg);
 }
 
 #zuruck {
@@ -106,6 +108,8 @@
   height: 25px;
   filter: brightness(1) invert(1);
   user-select: none;
+  transition: all ease 0.15s;
+  transform: rotate(0deg);
 }
 
 #container {
@@ -231,8 +235,7 @@
   }
 
 #inputButton:hover {
-  width: 65px;
-  height: 65px;
+  transform: scale(1.1);
 }
 
 input[type='range'] {
@@ -262,55 +265,65 @@ input[type='range']::-webkit-slider-thumb {
   flex-basis: 50%;
 }
 
-#autoPlayCheckbox {
-  display: none;
+
+
+
+
+.autoPlayButtonImage {
+position: fixed;
+display: inline-block;
+width: 35px;
+margin: 7px 0px 0 -16px;
+filter:invert(1);
+transition: all ease 0.4s;
+z-index: 8;
 }
 
-.AutoplayButton {
-  margin: -22px 0px 0px 120px;
-  font-family: Graphik0;
-  color: #ffffffee;
-  user-select: none;
-  width: 25px;
-  height: 25px;
-  border-radius: 35px;
-  background-color: rgb(61, 61, 61);
+.autoPlayButtonImageOn {
+position: fixed;
+display: inline-block;
+width: 35px;
+margin: 7px 0px 0 -16px;
+z-index: 8;
+transition: all ease 0.4s;
+filter:invert(0);
+}
+
+.autoPlayButton {
+position: fixed;
+box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
+border: 0.5px solid rgba(0, 0, 0, 0.198);
+margin: 25px 0px 0 30px;
+display: inline-block;
+border-radius: 5px;
+width: 70px;
+height: 42px;
+cursor: pointer;
+transition: all ease 0.4s;
+user-select: none;
+z-index: 10;
+}
+
+.autoPlayButtonOn {
+  position: fixed;
+  box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
+  background-color: rgba(255, 255, 255, 0.563);
+  border: 0.5px solid rgba(0, 0, 0, 0);
+  margin: 25px 0px 0 30px;
+  display: inline-block;
+  border-radius: 5px;
+  width: 70px;
+  height: 42px;
   cursor: pointer;
   transition: all ease 0.4s;
-}
-
-.AutoplayButtonOn {
-  margin: -22px 0px 0px 145px;
-  font-family: Graphik0;
-  color: #ffffffee;
+  z-index: 10;
   user-select: none;
-  width: 25px;
-  height: 25px;
-  border-radius: 35px;
-  cursor: pointer;
-  background-color: rgb(255, 255, 255);
-  transition: all ease 0.4s;
 }
 
-.autoPlayButtonBackgroundOff {
-  margin: 30px 0px 0px 120px;
-  background-color: rgba(208, 208, 208, 0.342);
-  border-radius: 35px;
-  width: 50px;
-  height: 20px;
-  cursor: pointer;
-  color: rgba(255, 255, 255, 0);
-}
 
-.autoPlayButtonBackgroundOn {
-  margin: 30px 0px 0px 120px;
-  background-image: linear-gradient(to right, rgba(0, 255, 0, 0.5), rgba(208, 208, 208, 0.342));
-  border-radius: 35px;
-  width: 50px;
-  height: 20px;
-  cursor: pointer;
-  color: rgba(255, 255, 255, 0);
-}
+
+
+
 
 
 
@@ -319,55 +332,65 @@ input[type='range']::-webkit-slider-thumb {
   flex-basis: 50%;
 }
 
-#randomSong {
-display: none;
+.randomSong {
+  position: fixed;
+  filter:invert(1);
+  display: inline-block;
+  margin: 8px 0px 0 -12px;
+  width: 25px;
+  z-index: 8;
+  transition: all ease 0.4s;
+  user-select: none;
+}
+
+.randomSongOn {
+  position: fixed;
+  filter: invert(0);
+  display: inline-block;
+  margin: 8px 0px 0 -12px;
+  width: 25px;
+  transition: all ease 0.4s;
+  z-index: 8;
+
+  user-select: none;
 }
 
 .randomSongBackground {
-  margin: 30px 120px 0px 0px;
-  background-color: rgba(208, 208, 208, 0.342);
-  border-radius: 35px;
-  width: 50px;
-  height: 20px;
+  position: fixed;
+  box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
+  border: 0.5px solid rgba(0, 0, 0, 0.198);
+  margin: 25px 0px 0 -100px;
+  display: inline-block;
+  border-radius: 5px;
+  width: 70px;
+  height: 42px;
   cursor: pointer;
-  color: rgba(255, 255, 255, 0);
+  z-index: 10;
+  transition: all ease 0.4s;
+  user-select: none;
 }
 
 .randomSongBackgroundOn {
-  margin: 30px 120px 0px 0px;
-  background-image: linear-gradient(to right, rgba(0, 255, 0, 0.5), rgba(208, 208, 208, 0.342));
-  border-radius: 35px;
-  width: 50px;
-  height: 20px;
-  cursor: pointer;
-  color: rgba(255, 255, 255, 0);
-}
-
-.randomSongButtonOff {
-  margin: -22px 120px 0px 0px;
-  font-family: Graphik0;
-  color: #ffffffee;
-  user-select: none;
-  width: 25px;
-  height: 25px;
-  border-radius: 35px;
-  background-color: rgb(61, 61, 61);
+  position: fixed;
+  box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
+  background-color: rgba(255, 255, 255, 0.563);
+  border: 0.5px solid rgba(0, 0, 0, 0);
+  margin: 25px 0px 0 -100px;
+  display: inline-block;
+  border-radius: 5px;
+  width: 70px;
+  height: 42px;
   cursor: pointer;
   transition: all ease 0.4s;
+  z-index: 10;
+  user-select: none;
 }
 
-.randomSongButtonOn {
-  margin: -22px 120px 0px 25px;
-  font-family: Graphik0;
-  color: #ffffffee;
-  user-select: none;
-  width: 25px;
-  height: 25px;
-  border-radius: 35px;
-  cursor: pointer;
-  background-color: rgb(255, 255, 255);
-  transition: all ease 0.4s;
-}
+
+
+
+
+
 
 
 
@@ -393,7 +416,6 @@ dialog::-webkit-scrollbar-track {
 
 @keyframes dialogPop {
   from {
-
     opacity: 0;
   }
   to {
@@ -424,6 +446,7 @@ dialog::-webkit-scrollbar-track {
 }
 
 .dialogButton:hover {
+  transform: scale(1.06);
   filter: brightness(1) invert(0.3);
 }
 
@@ -431,8 +454,8 @@ dialog::-webkit-scrollbar-track {
 dialog {
   scrollbar-width: thin;
   scrollbar-color: #999 #f1f1f1;
-  box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
+  box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
   border: 0.5px solid rgba(0, 0, 0, 0.198);
   background-color: #f2f2f2fc;
   border-radius: 5px;
@@ -452,49 +475,49 @@ dialog.closed {
 
 dialog::backdrop {
   transition: all ease 0.5s;
-  background-color: rgba(0, 0, 0, 0.21);
   user-select: none;
 }
 
 .dialogCloseButton {
-    margin-top: 50px;
-    background-color: #f2f2f2fc;
-    border: 0.01px solid rgba(0, 0, 0, 0.198);
-    width: 990px;
-    height: 90px;
-    color: black;
-    font-weight: 400;
-    font-size: 14px;
-    transition: background-color 1s;
-    font-family: Graphik2;
-    z-index: 5;
-    bottom: -20px;
-    position: sticky;
+  width: 40px;
+  height: 40px;
+  position: fixed;
+  position: sticky;
+  margin-top: 25px;
+  margin-right: 20px;
+  transition: all ease 1s;
+  filter: invert(0.2);
 }
 
+
 .dialogCloseButton:hover {
-  background-color:#ffffffda; 
-  transition: 0.4s;
-  color: rgb(44, 0, 31);
+  filter: invert(0.5);
+  transition: all ease 1s;
+  transform: scale(1.07);
+}
+
+
+#dialogHeader {
+/* Top und Sticky machen HeaderElemente Sticky */
+  top: -20px;
+  position: sticky;
+  display: flex;
+  width: 1010px;
+  height: 100px;
+  z-index: 10;
+  background-color: #f2f2f2fc;
 }
 
 #dialogHeadline {
-  /* Top und Sticky machen HeaderElemente Sticky */
-  top: -20px;
-  position: sticky;
-
+  flex-basis: 99%;
   text-shadow:  0 0px 10px rgba(0, 0, 0, 0.1);;
   font-size: 30px;
   font-family: Graphik1;
   padding-top: 50px;
-  margin-left: -10px;
+  margin-left: 80px;
   margin-top: -20px;
-  width: 1010px;
-  height: 100px;
-  z-index: 10;
   vertical-align: middle;
-  background-color: #f2f2f2fc;
-
+  text-align: center;
 }
 }
 
