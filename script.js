@@ -59,6 +59,8 @@ let newIndex = 0;
 let newIndexDialog = 0;
 const newIndexMinValue = 0;
 let previousIndex = [];
+let folderTrackCount = 0;
+let folderTrackCountArray = [];
 let dialogCurrentSongUpdater;
 let defaultSongCover = document.querySelector("#song");
 defaultSongCover.style.backgroundImage =
@@ -306,6 +308,11 @@ function autoPlayButtonActive () {
   });
 
 
+
+
+
+  
+
 let inputFileCompleted;
 input.addEventListener("change", (event) => {
   inputFileCompleted = function inputFileCompleted() {
@@ -316,7 +323,6 @@ input.addEventListener("change", (event) => {
 
   test.textContent = `Track Anzahl: ${event.target.files.length} & Aktueller Track: ${newIndex+1}`;
   folderTrackCount = event.target.files.length;
-
 
 
 
@@ -418,9 +424,36 @@ function mp3FileReader () {
 
 
 
+  input.addEventListener("click", (event) => {
+    audio.pause();
+    pausePlayButton.setAttribute("src", "Wallpaper/PlayButton2.svg");
+  });
+
+
+
+
+  let eventZähler = 1;
+  let previousFileNames = [];
+  let folderTrackCountArrayPenultimate = null;
   input.addEventListener("change", (event) => {
     for (let i = 0; i < event.target.files.length; i++) {
       const file = event.target.files[i];
+
+      
+      if(eventZähler === 2){
+        folderTrackCountArrayPenultimate = folderTrackCountArray.pop();
+      for(let i = 0; folderTrackCountArrayPenultimate > i; i++) {
+        let lastFileNameInPreviousFileNames = previousFileNames.pop();
+        document.querySelector(`div[file-name="${lastFileNameInPreviousFileNames}"]`).remove();
+
+      }
+      eventZähler = 1;
+    }
+
+      previousFileNames.push(file.name);
+
+
+
   
       (function(index) {
         jsmediatags.read(file, {
@@ -458,7 +491,8 @@ function mp3FileReader () {
             }
   
             const container = document.createElement("div");
-            container.setAttribute("data-index", index);
+            container.setAttribute("data-index", index, "file-name", title);
+            container.setAttribute("file-name", file.name);
   
             container.style.display = "flex";
             container.style.justifyContent = "space-between";
@@ -485,6 +519,10 @@ function mp3FileReader () {
             container.appendChild(albumTitelText);
   
             fileListAuflistung.appendChild(container);
+
+
+
+
   
             container.addEventListener("click", () => {
               clearTimeout(timeout);
@@ -609,6 +647,8 @@ function mp3FileReader () {
         });
       })(i);
     }
+    folderTrackCountArray.push(folderTrackCount);
+    eventZähler++;
     if (event) {
       dialogCurrentSongUpdater();
     }
@@ -672,3 +712,4 @@ function pressedButtonsChecker() {
     }
   }, 1000);
 };
+
