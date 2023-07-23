@@ -423,11 +423,22 @@ function mp3FileReader () {
 
 
 
+  input.addEventListener("change", (event) => {
+    newIndex = 0;
+    previousIndex = [];
+  });
 
   input.addEventListener("click", (event) => {
+    if (audio.paused || audio.played) {
     audio.pause();
     pausePlayButton.setAttribute("src", "Wallpaper/PlayButton2.svg");
+    setTimeout(()=> {
+      audio.pause();
+      pausePlayButton.setAttribute("src", "Wallpaper/PlayButton2.svg");
+    }, 1000)
+  }
   });
+  
 
 
 
@@ -712,4 +723,3 @@ function pressedButtonsChecker() {
     }
   }, 1000);
 };
-
